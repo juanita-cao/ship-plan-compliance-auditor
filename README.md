@@ -64,6 +64,8 @@ Python · Pydantic · Streamlit · Postgres · OpenCV · reportlab · pytest
 
 ## Running locally
 
+Requires Python 3.11+ (the codebase uses `X | None` union syntax throughout).
+
 ```bash
 pip install -r requirements.txt
 cp .env.example .env   # fill in DATABASE_URL at minimum
