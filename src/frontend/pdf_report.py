@@ -19,6 +19,8 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
 from reportlab.platypus import (
     Image as RLImage,
+)
+from reportlab.platypus import (
     Paragraph,
     SimpleDocTemplate,
     Spacer,

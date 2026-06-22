@@ -5,8 +5,8 @@ from pathlib import Path
 
 from PIL import Image
 
-from src.viz import render_spotlight
 from src.frontend.view_models import ResultsViewModel
+from src.viz import render_spotlight
 
 logger = logging.getLogger(__name__)
 

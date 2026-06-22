@@ -15,15 +15,11 @@ Integration tests (public API) remain in test_e2.py.
 
 from __future__ import annotations
 
-import cv2
 import numpy as np
-import pytest
 
 from src.backend.e_nodes import (
-    _BlobCandidate,
-    _DISPLAY_PAD_PX,
-    _MAX_ASPECT_RATIO,
     _MIN_BLOB_AREA_PX,
+    _BlobCandidate,
     _e1b_build_red_mask,
     _e1b_compute_display_bbox,
     _e1b_filter_candidates,

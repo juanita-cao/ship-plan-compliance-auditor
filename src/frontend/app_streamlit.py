@@ -18,14 +18,20 @@ if str(_SERVICE_ROOT) not in sys.path:
     sys.path.insert(0, str(_SERVICE_ROOT))
 
 from dotenv import load_dotenv
-load_dotenv(_SERVICE_ROOT / "src" / "backend" / "configs" / ".env")
 
-import streamlit as st  # noqa: E402
+load_dotenv(_SERVICE_ROOT / ".env")
 
-from src.frontend.pipeline_runner import _TIMEOUT_S, clear_job, poll_job, start_detection  # noqa: E402
-from src.frontend.spotlight import render_spotlight_node  # noqa: E402
-from src.frontend.state import resolve_next_state  # noqa: E402
-from src.frontend.view_models import ResultsViewModel  # noqa: E402
+import streamlit as st
+
+from src.frontend.pipeline_runner import (
+    _TIMEOUT_S,
+    clear_job,
+    poll_job,
+    start_detection,
+)
+from src.frontend.spotlight import render_spotlight_node
+from src.frontend.state import resolve_next_state
+from src.frontend.view_models import ResultsViewModel
 
 # ─── Dev flags ───────────────────────────────────────────────────────────────
 

@@ -11,11 +11,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv(Path(__file__).parent / "src" / "backend" / "configs" / ".env")
+load_dotenv(Path(__file__).parent / ".env")
 
 from src.backend.pipeline import run_pipeline
 from src.backend.schemas import GroundTruth
-
 
 _DEFAULT_PROMPT = Path("data/prompts/prompt_cot_counts_demo_ship_a.txt")
 

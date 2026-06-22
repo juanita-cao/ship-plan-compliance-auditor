@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.backend.schemas import CANONICAL_CATEGORIES, DetectedInstance
+from src.backend.schemas import CANONICAL_CATEGORIES
 from src.frontend.state import StateTransitionResult, resolve_next_state
 from src.frontend.view_models import ResultsViewModel
 
