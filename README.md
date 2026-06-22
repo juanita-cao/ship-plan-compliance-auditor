@@ -3,6 +3,9 @@
 [![CI](https://github.com/juanita-cao/ship-plan-compliance-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/juanita-cao/ship-plan-compliance-auditor/actions/workflows/ci.yml)
 ![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue)
 ![Streamlit](https://img.shields.io/badge/UI-Streamlit-red)
+![Postgres](https://img.shields.io/badge/DB-Postgres-336791)
+![OpenCV](https://img.shields.io/badge/CV-OpenCV-5C3EE8)
+![Tests](https://img.shields.io/badge/tests-219%20passing-brightgreen)
 
 **[Live demo →](https://ship-plan-auditor.streamlit.app/)**
 
