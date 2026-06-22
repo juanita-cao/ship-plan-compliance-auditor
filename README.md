@@ -1,109 +1,129 @@
 # Ship Plan Compliance Auditor
 
-A black-box detection tool that reads a ship deck plan image, locates fire-fighting
-equipment (extinguishers by type), and checks the result against a configurable set
-of compliance rules — surfaced through a Streamlit UI with a downloadable PDF report.
+[![CI](https://github.com/juanita-cao/ship-plan-compliance-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/juanita-cao/ship-plan-compliance-auditor/actions/workflows/ci.yml)
+![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue)
+![Streamlit](https://img.shields.io/badge/UI-Streamlit-red)
+
+**[Live demo →](https://ship-plan-auditor.streamlit.app/)**
+
+A black-box detection tool that reads a ship deck plan image, locates fire-fighting equipment (extinguishers by type), and checks the result against a configurable set of compliance rules — surfaced through a Streamlit UI with a downloadable PDF report.
+
+---
+
+## Demo Preview
+
+![Results screen preview](docs/assets/dashboard_preview.png)
+
+---
 
 ## What this demonstrates
 
-- **Vision-LLM detection as a structured pipeline, not a single prompt call.** The
-  model runs multiple times per image; per-category results are reconciled with
-  majority voting before anything reaches the user.
-- **A free, deterministic refinement layer alongside the paid model call.** A local
-  OpenCV blob-detection pass corrects instance coordinates without any additional
-  API spend.
-- **Domain rules layered on top of the detection output.** A small, swappable rule
-  table (modeled loosely on SOLAS/FSS Code extinguisher-count requirements) turns raw
-  counts into a pass/fail/warning verdict per rule plus an overall verdict.
-- **Multi-tenant data model.** Detection categories, compliance rule sets, and demo
-  datasets are looked up per "project" (per ship) from Postgres, not hardcoded —
-  adding a new ship/category set is a data change, not a code change.
-- **A real-time generated PDF report**, built with `reportlab` from the same
-  ViewModel the UI renders from — not a pre-rendered file read off disk.
+- **Vision-LLM detection as a structured pipeline, not a single prompt call.** The model runs multiple times per image; per-category results are reconciled with majority voting before anything reaches the user.
+- **A free, deterministic refinement layer alongside the paid model call.** A local OpenCV blob-detection pass corrects instance coordinates without any additional API spend.
+- **Domain rules layered on top of the detection output.** A small, swappable rule table (modeled loosely on SOLAS/FSS Code extinguisher-count requirements) turns raw counts into a pass/fail/warning verdict per rule plus an overall verdict.
+- **Multi-tenant data model.** Detection categories, compliance rule sets, and demo datasets are looked up per "project" (per ship) from Postgres, not hardcoded — adding a new ship/category set is a data change, not a code change.
+- **A real-time generated PDF report**, built with `reportlab` from the same ViewModel the UI renders from — not a pre-rendered file read off disk.
 
-## How it works
+> ⚠️ The compliance rule table shipped here is **illustrative only** — built for demonstration purposes, not validated against a current regulatory text. Don't use it for actual regulatory submission.
 
-1. User picks a ship and a deck plan image in the Streamlit UI.
-2. The image + a structured prompt go to a vision-capable LLM, run several times.
-3. A local OpenCV pass refines each detected instance's on-image coordinates (free,
-   no extra API call).
-4. Per-category counts are reconciled across runs by majority vote.
-5. Counts are checked against the project's compliance rule table.
-6. Results — annotated image, category counts, compliance verdict, the model's own
-   reasoning trace, and a downloadable PDF — are rendered back to the user.
+---
 
-All of this (image, model choice, run count, voting, prompt) is hidden behind a
-single "Run Analysis" button — the UI is a clean black-box tool, not a pipeline
-debugger.
+## Architecture
 
-> ⚠️ The compliance rule table shipped here is **illustrative only** — built for
-> demonstration purposes, not validated against a current regulatory text. Don't use
-> it for actual regulatory submission.
-
-## Engineering Approach
-
-This project follows a contract-first workflow:
-
-1. Define input/output schemas before implementing pipeline logic.
-2. Separate detection execution, validation checks, and decision interpretation
-   (compliance rules) into distinct stages.
-3. Preserve raw model outputs (the detection reasoning trace) for inspection rather
-   than discarding them after parsing.
-4. Use explicit verification gates before presenting results as decision support
-   (majority voting, local geometric refinement, compliance checks all run before
-   anything is shown to the user).
-5. Persist run metadata and structured outputs (Postgres) for reproducibility — the
-   same stored row backs both the live detection path and the demo/mock path, so
-   there is exactly one rendering code path to maintain.
-6. Keep the UI layer separate from the detection pipeline through a ViewModel-style
-   interface (`ResultsViewModel`), so the frontend never touches raw pipeline state.
-
-## Tech stack
-
-Python · Pydantic · Streamlit · Postgres · OpenCV · reportlab · pytest
-
-## Running locally
-
-Requires Python 3.11+ (the codebase uses `X | None` union syntax throughout).
-
-```bash
-pip install -r requirements.txt
-cp .env.example .env   # fill in DATABASE_URL at minimum
+```
+Deck plan image ──► E1 vision-LLM detect ──► E1b OpenCV center refine ──┐
+                        (N runs)                  (free, local)        │
+                                                                        ▼
+                                                            E4 majority vote ──┬──► D1 accuracy (eval mode)
+                                                                               └──► D2 compliance check
+                                                                                          │
+                                                                                          ▼
+                                                                              E5 report ──► Streamlit + PDF
 ```
 
-**Mock mode** (no API key needed — replays a previously stored detection result from
-Postgres for each demo image):
+Design documents:
+- [`docs/design_backend.md`](docs/design_backend.md) — pipeline table, data contracts, ADRs
+- [`docs/design_frontend.md`](docs/design_frontend.md) — state machine, ViewModel, screen flow
+
+Engineering approach (contract-first workflow):
+
+1. Define input/output schemas before implementing pipeline logic.
+2. Separate detection execution, validation checks, and decision interpretation (compliance rules) into distinct stages.
+3. Preserve raw model outputs (the detection reasoning trace) for inspection rather than discarding them after parsing.
+4. Use explicit verification gates before presenting results as decision support (majority voting, local geometric refinement, compliance checks all run before anything is shown to the user).
+5. Persist run metadata and structured outputs (Postgres) for reproducibility — the same stored row backs both the live detection path and the demo/mock path, so there is exactly one rendering code path to maintain.
+6. Keep the UI layer separate from the detection pipeline through a ViewModel-style interface (`ResultsViewModel`), so the frontend never touches raw pipeline state.
+
+---
+
+## Quickstart
 
 ```bash
+git clone https://github.com/juanita-cao/ship-plan-compliance-auditor.git
+cd ship-plan-compliance-auditor
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # fill in DATABASE_URL at minimum
+
+# apply schema + seed data to that Postgres instance
+psql "$DATABASE_URL" -f src/backend/db/migrations/001_category_lookup.sql
+psql "$DATABASE_URL" -f src/backend/db/migrations/002_eval_runs.sql
+psql "$DATABASE_URL" -f src/backend/db/seed_data.sql
+
+# run the test suite (219 tests)
+pytest -q
+
+# lint
+ruff check .
+
+# launch the UI in mock mode (no API key needed — replays a stored
+# detection result from Postgres for each demo image)
 FEH_MOCK=1 streamlit run src/frontend/app_streamlit.py
 ```
 
-**Live mode** (calls a real vision-LLM, requires `OPENAI_API_KEY` and/or a local
-Ollama server):
+Requires Python 3.11+ (the codebase uses `X | None` union syntax evaluated at runtime by Pydantic) and a reachable Postgres instance.
 
-```bash
-streamlit run src/frontend/app_streamlit.py
-```
+CI runs the same lint + test commands against an ephemeral Postgres on every push — see [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
-Either mode requires a reachable Postgres instance with the schema in
-`src/backend/db/migrations/` applied and seeded via `src/backend/db/seed_data.sql`.
+---
+
+## Data note
+
+Sample deck plan images are demo assets with identifying details (hull/IMO numbers, company markings) removed. Compliance rules are illustrative, modeled loosely on SOLAS/FSS Code extinguisher-count requirements — not validated against a current regulatory text, and not a substitute for a real regulatory review.
+
+The detection prompt itself is not included in this repo — a deliberate choice, not an oversight. This means **live mode is not runnable out of the box**; mock mode (Postgres-backed, no API calls) is what powers the hosted demo above and what the preview screenshot reflects.
+
+The evaluation harness (`run_eval.py`) supports comparing a local model (via Ollama) against a cloud model side by side, for cost/accuracy trade-off testing. All results shown in the demo dataset and this repo's docs were produced by the cloud backend; the local-model path is part of the harness's design but wasn't the one exercised for these specific numbers.
+
+---
 
 ## Project structure
 
-- `src/backend/` — detection pipeline, compliance rules, category lookup, Postgres access
-- `src/frontend/` — Streamlit UI, ViewModel layer, PDF report generation
-- `tests/` — unit tests for every stage above
-- `docs/design_backend.md`, `docs/design_frontend.md` — full design docs, including
-  the task list and implementation status for each layer
+```
+data/             demo deck-plan images + ground-truth counts (2 ship category sets)
+docs/             design documents — read before the corresponding code was written
+src/backend/      detection pipeline, schemas, compliance rules, Postgres access
+src/frontend/     Streamlit UI, ViewModel layer, PDF report generation
+tests/            219 tests covering every pipeline stage
+```
 
-## Disclaimer
+---
 
-Sample deck plan images are demo assets with identifying details (hull/IMO numbers,
-company markings) removed. Compliance rules are illustrative and not a substitute
-for a real regulatory review.
+## Current Scope
 
-The evaluation harness (`run_eval.py`) supports comparing a local model (via Ollama)
-against a cloud model side by side — useful for cost/accuracy trade-off testing. All
-results shown in the demo dataset and this repo's docs were produced by the cloud
-backend; the local-model path is part of the harness's design but wasn't the one
-exercised for these specific numbers.
+Implemented:
+- Vision-LLM detection pipeline with self-consistency majority voting across N runs
+- Free, local OpenCV refinement pass for instance coordinates
+- Postgres-backed multi-tenant category lookup — adding a ship/category set is a data change, not a code change
+- IMO-style compliance rule engine with per-rule GO/NO-GO verdicts and cited articles
+- Streamlit UI: mock mode (Postgres-backed, no API calls) + live mode
+- Real-time PDF report generation from the same ViewModel the UI renders from
+- CI: lint + 219 tests against an ephemeral Postgres on every push
+
+Not implemented:
+- Live mode is not runnable out of the box in this public repo — no detection prompt is shipped (see [Data note](#data-note)); bring your own to exercise it
+- Production-grade compliance rules calibrated against a current regulatory text
+- Multi-user authentication or persistent storage beyond the single shared demo database
+
+Per-step implementation status: `docs/design_backend.md` and `docs/design_frontend.md`, each under "Task list and implementation status".
