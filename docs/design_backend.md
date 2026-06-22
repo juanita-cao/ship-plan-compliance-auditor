@@ -423,30 +423,30 @@ Part of this project's structured design-review process. These scenarios are the
 #### E1 · `e1_extract_counts`
 
 **Implementation rules:**
-- **2× PIL upscale：** 调用前将图片用 PIL LANCZOS resize 到 2× 尺寸，编码为 PNG base64。
-- **Config 校验（即时 raise，不进入重试）：** 无效 `backend` → ValueError；`image_path` 不存在 → FileNotFoundError；`OPENAI_VISION_MODEL` / `OLLAMA_VISION_MODEL` 未设置 → KeyError。
-- **Cloud API：** OpenAI Responses API — `client.responses.create(...)`，`response.output_text`；`timeout=120s`；`detail="original"`。
-- **Local API：** Ollama httpx POST；`format=json`；`timeout=120s`。
-- **JSON 提取：** `raw.rfind("{")` 定位最后一个 JSON block；`raw.rfind("}")` 取右边界。允许 response 前有 CoT 文本。
-- **解析：** `json.loads(...)` → 校验全部 6 个 canonical category 存在，否则 → retry；额外 key 不报错（忽略）。
-- **重试策略：** 最多 3 次，指数退避 `2^attempt` 秒（上限 10s）；3 次全失败 → RuntimeError (HARD FAIL)。
+- **2× PIL upscale:** before the call, the image is resized to 2× size with PIL LANCZOS and encoded as PNG base64.
+- **Config validation (raises immediately, no retry):** invalid `backend` → ValueError; `image_path` doesn't exist → FileNotFoundError; `OPENAI_VISION_MODEL` / `OLLAMA_VISION_MODEL` not set → KeyError.
+- **Cloud API:** OpenAI Responses API — `client.responses.create(...)`, `response.output_text`; `timeout=120s`; `detail="original"`.
+- **Local API:** Ollama httpx POST; `format=json`; `timeout=120s`.
+- **JSON extraction:** `raw.rfind("{")` locates the last JSON block; `raw.rfind("}")` gives the right boundary. CoT text before the response is allowed.
+- **Parsing:** `json.loads(...)` → validates all 6 canonical categories are present, otherwise → retry; extra keys don't raise (ignored).
+- **Retry strategy:** up to 3 attempts, exponential backoff `2^attempt` seconds (capped at 10s); all 3 failing → RuntimeError (HARD FAIL).
 
-| Scenario ID | 场景 | 输入条件 | 预期输出 / 行为 |
+| Scenario ID | Scenario | Input conditions | Expected output / behavior |
 |---|------|---------|----------------|
-| E1-S01 | Cloud 正常返回 | OPENAI_VISION_MODEL 已设置；mock 返回含合法 JSON counts 的字符串 | result.run_id==run_id, result.total_by_category 含全部 6 个 canonical categories |
-| E1-S02 | Local 正常返回 | OLLAMA_VISION_MODEL 已设置；mock httpx 返回含合法 JSON counts 的字符串 | result.run_id==run_id, total_by_category 非空 |
-| E1-S03 | run_id 写入结果 | run_id=2, backend="cloud" | result.run_id==2 |
-| E1-S04 | CoT + JSON 混合 response 中提取最后 JSON block | response = "reasoning text ... {counts json}" | 正确解析 JSON counts，忽略前置文本 |
-| E1-S05 | 全零 counts 正常返回 | LLM 未检测到任何灭火器 → all zeros JSON | result.total_by_category 全部为 0，不报错 |
-| E1-S06 | OPENAI_VISION_MODEL 未设置 | backend="cloud"，无该 env var | 立即 raises，不调用 API，不进入重试 |
-| E1-S07 | OLLAMA_VISION_MODEL 未设置 | backend="local"，无该 env var | 立即 raises，不调用 API，不进入重试 |
-| E1-S08 | JSON 解析失败全部 3 次 → HARD FAIL | mock 每次返回无 JSON block 的字符串 | raises RuntimeError，共调用 API 3 次 |
-| E1-S09 | canonical category 缺失全部 3 次 → HARD FAIL | mock 返回 `{"extinguisher_CO2_5kg": 1}` (只有 1 个 key) | raises RuntimeError，共调用 API 3 次 |
-| E1-S10 | API 错误第 1 次失败，第 2 次成功（重试恢复） | mock 第 1 次 raise Exception，第 2 次成功 | 共调用 API 2 次，返回正常 E3CountResult |
-| E1-S11 | API 错误全部 3 次 → HARD FAIL | mock 每次 raise Exception | raises RuntimeError，共调用 API 3 次 |
-| E1-S12 | 无效 backend → ValueError（即时，不重试） | backend="invalid" | 立即 raises ValueError，不调用任何 API |
-| E1-S13 | 图片以 PNG base64 编码发送（含 2× upscale） | 任意合法图片文件 | request body 含 base64 encoded PNG；图片尺寸为原始的 2× |
-| E1-S14 | 图片文件不存在 → FileNotFoundError（即时） | image_path 指向不存在的文件 | 立即 raises FileNotFoundError，不调用任何 API |
+| E1-S01 | Cloud returns normally | OPENAI_VISION_MODEL set; mock returns a string with valid JSON counts | result.run_id==run_id, result.total_by_category contains all 6 canonical categories |
+| E1-S02 | Local returns normally | OLLAMA_VISION_MODEL set; mock httpx returns a string with valid JSON counts | result.run_id==run_id, total_by_category non-empty |
+| E1-S03 | run_id written to result | run_id=2, backend="cloud" | result.run_id==2 |
+| E1-S04 | Extract last JSON block from a mixed CoT + JSON response | response = "reasoning text ... {counts json}" | Correctly parses JSON counts, ignores leading text |
+| E1-S05 | All-zero counts returned normally | LLM detects no extinguishers → all-zeros JSON | result.total_by_category all 0, no error |
+| E1-S06 | OPENAI_VISION_MODEL not set | backend="cloud", no such env var | Raises immediately, no API call, no retry |
+| E1-S07 | OLLAMA_VISION_MODEL not set | backend="local", no such env var | Raises immediately, no API call, no retry |
+| E1-S08 | JSON parsing fails all 3 times → HARD FAIL | mock returns a string with no JSON block every time | raises RuntimeError, API called 3 times total |
+| E1-S09 | canonical category missing all 3 times → HARD FAIL | mock returns `{"extinguisher_CO2_5kg": 1}` (only 1 key) | raises RuntimeError, API called 3 times total |
+| E1-S10 | API error on attempt 1, succeeds on attempt 2 (retry recovers) | mock raises Exception on attempt 1, succeeds on attempt 2 | API called 2 times total, returns a normal E3CountResult |
+| E1-S11 | API error all 3 times → HARD FAIL | mock raises Exception every time | raises RuntimeError, API called 3 times total |
+| E1-S12 | Invalid backend → ValueError (immediate, no retry) | backend="invalid" | Raises ValueError immediately, no API called |
+| E1-S13 | Image sent as PNG base64 (with 2× upscale) | Any valid image file | request body contains base64-encoded PNG; image dimensions are 2× the original |
+| E1-S14 | Image file doesn't exist → FileNotFoundError (immediate) | image_path points to a nonexistent file | Raises FileNotFoundError immediately, no API called |
 
 ---
 
@@ -463,19 +463,19 @@ Part of this project's structured design-review process. These scenarios are the
 - `center_refined=True` set only when centroid successfully replaces the original center.
 - Refined center does not affect `total_by_category`, E4 voting, or D1 accuracy — centers are used only by `viz.py`.
 
-| Scenario ID | 场景 | 输入条件 | 预期输出 / 行为 |
+| Scenario ID | Scenario | Input conditions | Expected output / behavior |
 |---|------|---------|----------------|
-| E1b-S01 | 红色 blob 找到 → 质心替换 LLM center | 合成图：已知红色矩形，LLM center 轻微偏移 | result center ≈ 红色矩形质心；center_refined=True |
-| E1b-S02 | 搜索窗口内无红色 blob → 保留原 center | 合成图：搜索区域全灰 | center 不变；center_refined=False；warning logged |
-| E1b-S03 | center=None 的 instance 原样通过 | instance.center=None | 返回的 instance.center 仍为 None，center_refined=False |
-| E1b-S04 | 搜索窗口超出图片边界 → clamp 后正常运行 | center 靠近图片边缘 | 不 raise；clamp 到 [0, img_w/h]；正常返回 |
-| E1b-S05 | instances=[] → 返回空列表 | E3CountResult.instances=[] | 返回 instances=[]，无 exception |
-| E1b-S06 | center_refined 仅在成功替换时为 True | 混合：部分有红 blob，部分无 | 有 blob 的 instance.center_refined=True；无 blob 的 center_refined=False |
-| E1b-S07 | 输入 E3CountResult 其他字段不变 | 任意 | total_by_category / run_id / input_image_size 与输入相同 |
-| E1b-S08 | 多个 blob，选最近而非最大 | 合成图：两个红色矩形，一大（远）一小（近 LLM center）| 选小的（近的）blob 质心；center_refined=True |
-| E1b-S09 | 极小 blob 被过滤（噪声忽略） | 合成图：仅有 < _MIN_BLOB_AREA_PX 的红色点 | center 不变；center_refined=False；warning logged |
-| E1b-S10 | center 越界 → soft fallback | instance.center=[1.5, 0.5]（越界） | center 不变；center_refined=False；warning logged；不 raise |
-| E1b-S11 | 图片路径不可读 → 返回原始 result，不 raise | image_path 指向不存在的文件 | 原始 result 原样返回；不 raise；warning logged |
+| E1b-S01 | Red blob found → centroid replaces LLM center | Synthetic image: known red rectangle, LLM center slightly offset | result center ≈ red rectangle's centroid; center_refined=True |
+| E1b-S02 | No red blob in search window → keep original center | Synthetic image: search area all gray | center unchanged; center_refined=False; warning logged |
+| E1b-S03 | Instance with center=None passes through unchanged | instance.center=None | Returned instance.center is still None, center_refined=False |
+| E1b-S04 | Search window exceeds image bounds → runs normally after clamp | center near the image edge | Does not raise; clamps to [0, img_w/h]; returns normally |
+| E1b-S05 | instances=[] → returns an empty list | E3CountResult.instances=[] | Returns instances=[], no exception |
+| E1b-S06 | center_refined is True only on a successful replacement | Mixed: some have a red blob, some don't | Instances with a blob have center_refined=True; those without have center_refined=False |
+| E1b-S07 | Other fields of the input E3CountResult are unchanged | Any | total_by_category / run_id / input_image_size match the input |
+| E1b-S08 | Multiple blobs — picks closest, not largest | Synthetic image: two red rectangles, one large (far) and one small (close to the LLM center) | Picks the smaller (closer) blob's centroid; center_refined=True |
+| E1b-S09 | Tiny blob filtered out (noise ignored) | Synthetic image: only red dots smaller than _MIN_BLOB_AREA_PX | center unchanged; center_refined=False; warning logged |
+| E1b-S10 | Out-of-range center → soft fallback | instance.center=[1.5, 0.5] (out of range) | center unchanged; center_refined=False; warning logged; does not raise |
+| E1b-S11 | Unreadable image path → returns the original result, does not raise | image_path points to a nonexistent file | Original result returned unchanged; does not raise; warning logged |
 
 ---
 
@@ -483,65 +483,65 @@ Part of this project's structured design-review process. These scenarios are the
 
 **Decision rules:** ratio = majority_freq / n_runs. Thresholds: ACCEPTED ≥ `VOTE_THRESHOLD_ACCEPT`, ACCEPTED_WITH_WARNING ≥ `VOTE_THRESHOLD_WARN`, else MANUAL_REVIEW_REQUIRED (calibrated values in `schemas.py`, not repeated here). Tie overrides all: if top-2 count values share same frequency → MANUAL_REVIEW_REQUIRED + is_tie=True regardless of ratio.
 
-| Scenario ID | 场景 | 输入条件 | 预期输出 / 行为 |
+| Scenario ID | Scenario | Input conditions | Expected output / behavior |
 |---|------|---------|----------------|
-| E4-S01 | 全票一致 | n_runs=4, counts=[3,3,3,3] | ratio=1.0, status=ACCEPTED, is_tie=False |
-| E4-S02 | 边界 ratio 恰好落在 accept 阈值上 → ACCEPTED（非 WARNING） | counts=[3,3,3,2] → freq=3/4 | status=ACCEPTED, is_tie=False |
-| E4-S03 | 边界 ratio 恰好落在 warn 阈值上 → ACCEPTED_WITH_WARNING（非 MANUAL） | counts=[3,3,2,4] → freq=2/4 | status=ACCEPTED_WITH_WARNING, is_tie=False |
-| E4-S04 | ratio 低于 warn 阈值，无 tie → MANUAL_REVIEW_REQUIRED | n_runs=8, counts=[3,3,2,4,5,6,7,8] → winner=3, freq=2/8 | status=MANUAL_REVIEW_REQUIRED, is_tie=False |
-| E4-S05 | Tie: 前两名频次相同 → 强制 MANUAL_REVIEW | n_runs=4, counts=[3,4,3,4] → {3:2,4:2} | is_tie=True, status=MANUAL_REVIEW_REQUIRED |
-| E4-S06 | 输出包含全部 6 个 canonical categories | 任意输入 | len(result.votes)==6, keys==CANONICAL_CATEGORIES |
-| E4-S07 | voted_count / majority_freq / all_counts 全部正确 | counts=[3,3,3,3,4] | voted_count=3, majority_freq=4, all_counts 存储所有 5 个值 |
-| E4-S08 | threshold 常量记录在 CategoryVote 中（审计） | 任意 | threshold_accept==VOTE_THRESHOLD_ACCEPT, threshold_warn==VOTE_THRESHOLD_WARN |
-| E4-S09 | n_runs=1 单次运行 → 强制 WARNING（无投票发生） | 1 run, count=2 | vote_mode="single_run", status=ACCEPTED_WITH_WARNING, is_tie=False, voted_count=2 |
-| E4-S10 | 所有 6 个 category 同时独立投票 | 6 个 category 各有不同分布 | 每个 category 的 status 独立计算，互不影响 |
+| E4-S01 | Unanimous | n_runs=4, counts=[3,3,3,3] | ratio=1.0, status=ACCEPTED, is_tie=False |
+| E4-S02 | Boundary ratio lands exactly on the accept threshold → ACCEPTED (not WARNING) | counts=[3,3,3,2] → freq=3/4 | status=ACCEPTED, is_tie=False |
+| E4-S03 | Boundary ratio lands exactly on the warn threshold → ACCEPTED_WITH_WARNING (not MANUAL) | counts=[3,3,2,4] → freq=2/4 | status=ACCEPTED_WITH_WARNING, is_tie=False |
+| E4-S04 | Ratio below the warn threshold, no tie → MANUAL_REVIEW_REQUIRED | n_runs=8, counts=[3,3,2,4,5,6,7,8] → winner=3, freq=2/8 | status=MANUAL_REVIEW_REQUIRED, is_tie=False |
+| E4-S05 | Tie: top two share the same frequency → forces MANUAL_REVIEW | n_runs=4, counts=[3,4,3,4] → {3:2,4:2} | is_tie=True, status=MANUAL_REVIEW_REQUIRED |
+| E4-S06 | Output contains all 6 canonical categories | Any input | len(result.votes)==6, keys==CANONICAL_CATEGORIES |
+| E4-S07 | voted_count / majority_freq / all_counts all correct | counts=[3,3,3,3,4] | voted_count=3, majority_freq=4, all_counts stores all 5 values |
+| E4-S08 | Threshold constants recorded in CategoryVote (audit) | Any | threshold_accept==VOTE_THRESHOLD_ACCEPT, threshold_warn==VOTE_THRESHOLD_WARN |
+| E4-S09 | n_runs=1 single run → forces WARNING (no voting occurs) | 1 run, count=2 | vote_mode="single_run", status=ACCEPTED_WITH_WARNING, is_tie=False, voted_count=2 |
+| E4-S10 | All 6 categories voted independently at once | 6 categories, each with a different distribution | Each category's status is computed independently, with no cross-effect |
 | E4-S11 | n_runs=0 → ValueError | n_runs=0 | ValueError raised |
-| E4-S12 | runs 数量与 n_runs 不符 → ValueError | n_runs=5, len(runs)=4 | ValueError raised |
-| E4-S13 | run.total_by_category 缺少 canonical key → ValueError | 某 run 的 total_by_category 只有 5 个 key | ValueError raised |
-| E4-S14 | run.total_by_category 含非 canonical key → ValueError | 某 run 含 "extinguisher_halon_6kg" key | ValueError raised |
-| E4-S15 | Tie 时 voted_count=None，tied_candidates 列出平票值 | counts=[3,4,3,4,5] → {3:2,4:2,5:1} | voted_count=None, tied_candidates=[3,4], majority_freq=2, is_tie=True, status=MANUAL_REVIEW_REQUIRED |
+| E4-S12 | runs count doesn't match n_runs → ValueError | n_runs=5, len(runs)=4 | ValueError raised |
+| E4-S13 | run.total_by_category missing a canonical key → ValueError | A run's total_by_category has only 5 keys | ValueError raised |
+| E4-S14 | run.total_by_category contains a non-canonical key → ValueError | A run contains an "extinguisher_halon_6kg" key | ValueError raised |
+| E4-S15 | On tie, voted_count=None, tied_candidates lists the tied values | counts=[3,4,3,4,5] → {3:2,4:2,5:1} | voted_count=None, tied_candidates=[3,4], majority_freq=2, is_tie=True, status=MANUAL_REVIEW_REQUIRED |
 
 ---
 
 #### D1 · `d1_evaluate_accuracy`
 
-**[AMENDMENT] 函数签名：** `runs: list[E3CountResult]` 参数已移除。single_run_accuracy_avg_pct 改从 `CategoryVote.all_counts` 计算，不再需要原始 runs 列表。新签名：`d1_evaluate_accuracy(voting: E4VotingResult, ground_truth: GroundTruth) → D1AccuracyDecision`。
+**[AMENDMENT] Function signature:** the `runs: list[E3CountResult]` parameter has been removed. `single_run_accuracy_avg_pct` is now computed from `CategoryVote.all_counts` instead, so the raw runs list is no longer needed. New signature: `d1_evaluate_accuracy(voting: E4VotingResult, ground_truth: GroundTruth) → D1AccuracyDecision`.
 
-**Decision rules（业务规则，Phase 1 定死）:**
-- PASS: n_correct == n_total（全部 6 个 category 精确匹配）
+**Decision rules (business rules, fixed in Phase 1):**
+- PASS: n_correct == n_total (all 6 categories match exactly)
 - FAIL: n_correct == 0
 - PARTIAL: 0 < n_correct < n_total
 
-**n_correct / majority_vote_accuracy_pct：** 基于 `voted_count == gt.counts[cat]`，与 E4 status 无关（包含 MANUAL_REVIEW_REQUIRED 和 ACCEPTED_WITH_WARNING 的 category）。`voted_count=None`（tie）的 category 视为 incorrect，不计入 n_correct。
+**n_correct / majority_vote_accuracy_pct:** based on `voted_count == gt.counts[cat]`, independent of E4 status (includes categories with MANUAL_REVIEW_REQUIRED and ACCEPTED_WITH_WARNING). A category with `voted_count=None` (tie) is treated as incorrect and excluded from n_correct.
 
 **majority_vote_accuracy_pct** = `n_correct / n_total × 100.0`
 
 **accuracy_gain_pct** = `majority_vote_accuracy_pct − single_run_accuracy_avg_pct`
 
-**single_run_accuracy_avg_pct：** 对每个 run index i（0..n_runs-1），`correct_i = count of cats where voting.votes[cat].all_counts[i] == gt.counts[cat]`；求 `mean(correct_i / n_total) × 100.0`。要求所有 category 的 `all_counts` 长度相同（同一 pipeline 组装保证），否则 ValueError。
+**single_run_accuracy_avg_pct:** for each run index i (0..n_runs-1), `correct_i = count of cats where voting.votes[cat].all_counts[i] == gt.counts[cat]`; computes `mean(correct_i / n_total) × 100.0`. Requires every category's `all_counts` to have the same length (guaranteed by how the pipeline assembles them), otherwise ValueError.
 
-**accuracy_on_auto_accepted_pct：** 仅限 `status == "ACCEPTED"` 的 categories 中，`voted_count == gt.counts[cat]` 的比例 × 100.0；当 ACCEPTED 数量为 0 时返回 0.0（不除以零）。
+**accuracy_on_auto_accepted_pct:** among only the categories with `status == "ACCEPTED"`, the fraction where `voted_count == gt.counts[cat]` × 100.0; returns 0.0 when there are zero ACCEPTED categories (avoids dividing by zero).
 
-**Input validation：** 校验 `voting.votes` 和 `ground_truth.counts` 均恰好包含全部 6 个 canonical categories，否则 ValueError。
+**Input validation:** validates that both `voting.votes` and `ground_truth.counts` contain exactly all 6 canonical categories, otherwise ValueError.
 
-| Scenario ID | 场景 | 输入条件 | 预期输出 / 行为 |
+| Scenario ID | Scenario | Input conditions | Expected output / behavior |
 |---|------|---------|----------------|
-| D1-S01 | 全部 6/6 正确 | voted==GT for all 6 | decision=PASS, n_correct=6, majority_vote_accuracy_pct=100.0, image_level_exact_match=True |
-| D1-S02 | 5/6 正确 | 1 category voted≠GT | decision=PARTIAL, n_correct=5, image_level_exact_match=False |
-| D1-S03 | 1/6 正确 | 5 categories voted≠GT | decision=PARTIAL, n_correct=1, image_level_exact_match=False |
-| D1-S04 | 0/6 正确 | all voted≠GT | decision=FAIL, n_correct=0, majority_vote_accuracy_pct=0.0, image_level_exact_match=False |
-| D1-S05 | accuracy_gain_pct 正值（voting 有增益） | majority_vote=80%, single_run_avg=60% | accuracy_gain_pct=20.0 |
-| D1-S06 | accuracy_gain_pct 负值（voting 有损） | majority_vote=60%, single_run_avg=80% | accuracy_gain_pct=-20.0 |
-| D1-S07 | auto_accept_rate 计算正确 | 4 ACCEPTED, 2 非 ACCEPTED | auto_accept_rate≈0.667 |
-| D1-S08 | accuracy_on_auto_accepted_pct: ACCEPTED=0 时返回 0.0 | all categories MANUAL_REVIEW_REQUIRED | accuracy_on_auto_accepted_pct=0.0 |
-| D1-S09 | inputs_snapshot 包含审计字段 | 任意 | inputs_snapshot 含 "voting" 和 "ground_truth" 键 |
-| D1-S10 | per_category 有且仅有 6 条（canonical 全覆盖） | 任意 | len(per_category)==6 |
-| D1-S11 | tie（voted_count=None）视为 incorrect | 1 category is_tie=True（voted_count=None），其余 voted==GT | correct=False for tie category，n_correct 不含该 category |
-| D1-S12 | voting.votes 缺少 canonical category → ValueError | voting.votes 只有 5 个 key | raises ValueError |
-| D1-S13 | ground_truth.counts 缺少 canonical category → ValueError | ground_truth.counts 只有 5 个 key | raises ValueError |
-| D1-S14 | voting 含非 canonical category → ValueError | voting.votes 含 "extinguisher_halon_6kg" | raises ValueError |
-| D1-S15 | all_counts 对齐 → single_run_accuracy_avg_pct 正确 | n_runs=3，每 category 的 all_counts 均长度 3 | single_run_accuracy_avg_pct 数值正确 |
-| D1-S16 | all_counts 长度不一致 → ValueError | 某 category 的 all_counts 长度与其他不同 | raises ValueError |
+| D1-S01 | All 6/6 correct | voted==GT for all 6 | decision=PASS, n_correct=6, majority_vote_accuracy_pct=100.0, image_level_exact_match=True |
+| D1-S02 | 5/6 correct | 1 category voted≠GT | decision=PARTIAL, n_correct=5, image_level_exact_match=False |
+| D1-S03 | 1/6 correct | 5 categories voted≠GT | decision=PARTIAL, n_correct=1, image_level_exact_match=False |
+| D1-S04 | 0/6 correct | all voted≠GT | decision=FAIL, n_correct=0, majority_vote_accuracy_pct=0.0, image_level_exact_match=False |
+| D1-S05 | accuracy_gain_pct positive (voting helped) | majority_vote=80%, single_run_avg=60% | accuracy_gain_pct=20.0 |
+| D1-S06 | accuracy_gain_pct negative (voting hurt) | majority_vote=60%, single_run_avg=80% | accuracy_gain_pct=-20.0 |
+| D1-S07 | auto_accept_rate computed correctly | 4 ACCEPTED, 2 not ACCEPTED | auto_accept_rate≈0.667 |
+| D1-S08 | accuracy_on_auto_accepted_pct: returns 0.0 when ACCEPTED=0 | all categories MANUAL_REVIEW_REQUIRED | accuracy_on_auto_accepted_pct=0.0 |
+| D1-S09 | inputs_snapshot contains audit fields | Any | inputs_snapshot contains "voting" and "ground_truth" keys |
+| D1-S10 | per_category has exactly 6 entries (full canonical coverage) | Any | len(per_category)==6 |
+| D1-S11 | A tie (voted_count=None) is treated as incorrect | 1 category has is_tie=True (voted_count=None), the rest voted==GT | correct=False for the tied category; n_correct excludes it |
+| D1-S12 | voting.votes missing a canonical category → ValueError | voting.votes has only 5 keys | raises ValueError |
+| D1-S13 | ground_truth.counts missing a canonical category → ValueError | ground_truth.counts has only 5 keys | raises ValueError |
+| D1-S14 | voting contains a non-canonical category → ValueError | voting.votes contains "extinguisher_halon_6kg" | raises ValueError |
+| D1-S15 | Aligned all_counts → single_run_accuracy_avg_pct correct | n_runs=3, every category's all_counts has length 3 | single_run_accuracy_avg_pct value is correct |
+| D1-S16 | Inconsistent all_counts length → ValueError | One category's all_counts length differs from the others | raises ValueError |
 
 ---
 
@@ -592,18 +592,18 @@ class ComplianceResult(BaseModel):
 
 **Feature flag:** `feature_flags.py::COMPLIANCE_MODE` (env `FEH_COMPLIANCE`) — `"off"` skips D2 entirely (`ctx.compliance_result=None`); `"mock"` (default) runs the hardcoded rules above with `is_mock=True`; `"config"`/`"llm"` are future phases (rules from `rules_compliance.json` / LLM-assisted interpretation), not yet implemented.
 
-| Scenario ID | 场景 | 输入条件 | 预期输出 / 行为 |
+| Scenario ID | Scenario | Input conditions | Expected output / behavior |
 |---|------|---------|----------------|
-| D2-S01 | 全部规则通过 | co2=1, dp=4, foam=1, space_type=None | overall_verdict=GO, 所有 check.status ∈ {pass, not_applicable} |
-| D2-S02 | CO₂ 缺失 → R01 fail | co2=0, dp=4, foam=1 | overall_verdict=NO_GO, R01.status=fail |
-| D2-S03 | Dry powder 低于下限 → R02 fail | co2=1, dp=1, foam=1 | overall_verdict=NO_GO, R02.status=fail |
-| D2-S04 | 总数过低 → R04 fail | co2=1, dp=2, foam=0 | overall_verdict=NO_GO, R04.status=fail |
-| D2-S05 | foam=0 且 space_type=None → R03 N/A；co2=1<2 → R05 也 N/A | co2=1, dp=4, foam=0, space_type=None | overall_verdict=GO |
-| D2-S06 | foam=0 且 space_type="accommodation" → R03 warning | co2=1, dp=4, foam=0, space_type="accommodation" | overall_verdict=CONDITIONAL, R03.status=warning |
-| D2-S07 | CO₂=2 触发 spare 规则，spare=0 → R05 warning | co2=2, dp=4, foam=1, co2_spare=0 | overall_verdict=CONDITIONAL, R05.status=warning |
-| D2-S08 | 空 counts → HARD FAIL | total_by_category={} | raises ValueError |
-| D2-S09 | counts_snapshot 携带评估时的原始计数（审计） | co2=1, dp=4, foam=0 | result.counts_snapshot["extinguisher_CO2_5kg"]==1 |
-| D2-S10 | Phase 1 全部 check 标记 is_mock_rule=True | co2=1, dp=4, foam=1 | all(c.is_mock_rule for c in result.checks) |
+| D2-S01 | All rules pass | co2=1, dp=4, foam=1, space_type=None | overall_verdict=GO, all check.status ∈ {pass, not_applicable} |
+| D2-S02 | CO₂ missing → R01 fail | co2=0, dp=4, foam=1 | overall_verdict=NO_GO, R01.status=fail |
+| D2-S03 | Dry powder below minimum → R02 fail | co2=1, dp=1, foam=1 | overall_verdict=NO_GO, R02.status=fail |
+| D2-S04 | Total too low → R04 fail | co2=1, dp=2, foam=0 | overall_verdict=NO_GO, R04.status=fail |
+| D2-S05 | foam=0 and space_type=None → R03 N/A; co2=1<2 → R05 also N/A | co2=1, dp=4, foam=0, space_type=None | overall_verdict=GO |
+| D2-S06 | foam=0 and space_type="accommodation" → R03 warning | co2=1, dp=4, foam=0, space_type="accommodation" | overall_verdict=CONDITIONAL, R03.status=warning |
+| D2-S07 | CO₂=2 triggers the spare rule, spare=0 → R05 warning | co2=2, dp=4, foam=1, co2_spare=0 | overall_verdict=CONDITIONAL, R05.status=warning |
+| D2-S08 | Empty counts → HARD FAIL | total_by_category={} | raises ValueError |
+| D2-S09 | counts_snapshot carries the raw counts at evaluation time (audit) | co2=1, dp=4, foam=0 | result.counts_snapshot["extinguisher_CO2_5kg"]==1 |
+| D2-S10 | All Phase 1 checks marked is_mock_rule=True | co2=1, dp=4, foam=1 | all(c.is_mock_rule for c in result.checks) |
 
 **Frontend rendering** (`_render_compliance_panel()` in `app_streamlit.py`): see `design_frontend.md` Section 8 Render Contract and Section 11 Layout.
 
@@ -619,21 +619,21 @@ class ComplianceResult(BaseModel):
 
 **File write failure:** log error, set `output_path=None`, continue — do not raise.
 
-| Scenario ID | 场景 | 输入条件 | 预期输出 / 行为 |
+| Scenario ID | Scenario | Input conditions | Expected output / behavior |
 |---|------|---------|----------------|
-| E5-S01 | Full mode | ctx.report_mode="full" | report_mode="full", text 含 LOCAL + CLOUD + COMPARISON 三个区块 |
-| E5-S02 | Local-only mode（降级） | ctx.report_mode="local_only" | report_mode="local_only", text 含 ⚠ 降级说明，无 COMPARISON 区块，degraded_reason 非 None |
-| E5-S03 | Cloud-only mode（降级） | ctx.report_mode="cloud_only" | report_mode="cloud_only", text 含 ⚠ 降级说明，无 COMPARISON 区块，degraded_reason 非 None |
-| E5-S04 | 文件写入 | 任意成功场景 | output_path 非 None，文件名为 {session_id}.json，文件存在于 experiments/results/ |
-| E5-S05 | data 字段可 JSON 序列化 | 任意 | json.dumps(report.data) 不抛异常（可 round-trip）|
-| E5-S06 | text 包含全部 7 个核心 metrics 关键词 | 任意 | text 含 "majority_vote_accuracy_pct"、"accuracy_gain_pct" 等全部 7 个 metric 名称 |
-| E5-S07 | report_mode 无效 → ValueError | ctx.report_mode 为非法值 | raises ValueError |
-| E5-S08 | output_dir 不存在时自动创建 | experiments/results/ 不存在 | 目录被创建，文件写入成功，output_path 非 None |
-| E5-S09 | 文件写入失败 → SOFT，不 raise | 模拟 OSError（patch Path.write_text） | output_path=None，函数正常返回，error 被 log |
-| E5-S10 | data 含必要顶层 key | 任意 | data 含 "metadata"、"metrics"、"voting"、"accuracy"、"mode"、"degraded_reason" 六个顶层 key |
-| E5-S11 | degraded_reason 写入 data | ctx.report_mode="local_only" | data["degraded_reason"] 非 None，与 E5Report.degraded_reason 相同 |
-| E5-S12 | write_status="success" 正常写入 | 任意成功场景 | write_status="success"，write_error=None |
-| E5-S13 | write_status="failed" + write_error 写入失败时设置 | 模拟 OSError | write_status="failed"，write_error 含 OSError 信息 |
+| E5-S01 | Full mode | ctx.report_mode="full" | report_mode="full", text contains LOCAL + CLOUD + COMPARISON sections |
+| E5-S02 | Local-only mode (degraded) | ctx.report_mode="local_only" | report_mode="local_only", text contains a ⚠ degraded notice, no COMPARISON section, degraded_reason not None |
+| E5-S03 | Cloud-only mode (degraded) | ctx.report_mode="cloud_only" | report_mode="cloud_only", text contains a ⚠ degraded notice, no COMPARISON section, degraded_reason not None |
+| E5-S04 | File write | Any success scenario | output_path not None, filename is {session_id}.json, file exists in experiments/results/ |
+| E5-S05 | data field is JSON-serializable | Any | json.dumps(report.data) doesn't raise (round-trips) |
+| E5-S06 | text contains all 7 core metric keywords | Any | text contains "majority_vote_accuracy_pct", "accuracy_gain_pct", and all 7 metric names |
+| E5-S07 | Invalid report_mode → ValueError | ctx.report_mode is an illegal value | raises ValueError |
+| E5-S08 | output_dir auto-created when missing | experiments/results/ doesn't exist | Directory is created, file written successfully, output_path not None |
+| E5-S09 | File write failure → SOFT, doesn't raise | Simulated OSError (patch Path.write_text) | output_path=None, function returns normally, error is logged |
+| E5-S10 | data contains the required top-level keys | Any | data contains the six top-level keys "metadata", "metrics", "voting", "accuracy", "mode", "degraded_reason" |
+| E5-S11 | degraded_reason written to data | ctx.report_mode="local_only" | data["degraded_reason"] not None, matches E5Report.degraded_reason |
+| E5-S12 | write_status="success" on normal write | Any success scenario | write_status="success", write_error=None |
+| E5-S13 | write_status="failed" + write_error set on write failure | Simulated OSError | write_status="failed", write_error contains the OSError message |
 
 ---
 
@@ -646,52 +646,52 @@ class ComplianceResult(BaseModel):
 - `get_canonical_categories`/`get_synonyms` raise `ValueError` immediately for empty/unknown identifiers — never return an empty set to mean "not found" (ambiguous with "found, but zero rows"). `list_project_ids` has no identifier to be "not found", so an empty table legitimately returns `[]`, not an error.
 - `clear_cache()` test helper resets all three caches; not used by production code paths.
 
-| Scenario ID | 场景 | 输入条件 | 预期输出 / 行为 |
+| Scenario ID | Scenario | Input conditions | Expected output / behavior |
 |---|------|---------|----------------|
-| CL-S01 | 已知 project_id 返回完整 canonical 集合（demo_ship_a） | project_id="demo_ship_a" | 返回 frozenset，len==6，内容与 Section 2 表一致 |
-| CL-S02 | 已知 project_id 返回完整 canonical 集合（demo_ship_b） | project_id="demo_ship_b" | 返回 frozenset，len==4，内容与 Section 2 表一致 |
-| CL-S03 | 未知 project_id → ValueError | project_id="nonexistent_ship" | raises ValueError，不缓存任何结果 |
-| CL-S04 | 空字符串 project_id → ValueError（立即，不查库） | project_id="" | raises ValueError，DB 查询计数为 0 |
-| CL-S05 | 重复调用同一 project_id → 第二次走缓存 | 连续调用两次 get_canonical_categories("demo_ship_a") | 两次返回值相等；DB 查询计数仅为 1（mock 计数验证） |
-| CL-S06 | 已知 canonical_name 返回其 synonyms | canonical_name="extinguisher_DCP_5kg", project_id="demo_ship_b" | 返回 frozenset 含 "P"/"DCP"/"DP"/"D.C.P." |
-| CL-S07 | canonical_name 不属于该 project_id 的 set → ValueError | canonical_name="extinguisher_DCP_5kg", project_id="demo_ship_a" | raises ValueError（demo_ship_a 没有这个分类） |
-| CL-S08 | canonical_name 存在但暂无 synonym 记录 → 返回空集（非错误） | 任意暂无 synonym 行的 canonical_category | 返回 frozenset() ，不 raise |
-| CL-S09 | 重复调用同一 (canonical_name, project_id) → 第二次走缓存 | 连续调用两次 get_synonyms 同一组参数 | 两次返回值相等；DB 查询计数仅为 1 |
-| CL-S10 | clear_cache() 后强制重新查库 | get_canonical_categories(...) → clear_cache() → 再调用一次 | DB 查询计数为 2（缓存被清空，第二次重新查询） |
-| CL-S11 | 列出全部 project_id，按字母排序 | 当前数据库有 demo_ship_a + demo_ship_b | 返回 `["demo_ship_a", "demo_ship_b"]` |
-| CL-S12 | 重复调用 list_project_ids() → 第二次走缓存 | 连续调用两次 | 两次返回值相等；DB 查询计数仅为 1 |
-| CL-S13 | clear_cache() 也清空 project_ids 缓存 | list_project_ids() → clear_cache() → 再调用一次 | DB 查询计数为 2 |
+| CL-S01 | Known project_id returns the full canonical set (demo_ship_a) | project_id="demo_ship_a" | Returns a frozenset, len==6, matching the Section 2 table |
+| CL-S02 | Known project_id returns the full canonical set (demo_ship_b) | project_id="demo_ship_b" | Returns a frozenset, len==4, matching the Section 2 table |
+| CL-S03 | Unknown project_id → ValueError | project_id="nonexistent_ship" | raises ValueError, no result is cached |
+| CL-S04 | Empty-string project_id → ValueError (immediate, no DB query) | project_id="" | raises ValueError, DB query count is 0 |
+| CL-S05 | Repeated calls with the same project_id → second call hits the cache | Two consecutive calls to get_canonical_categories("demo_ship_a") | Both return values are equal; DB query count is only 1 (verified via mock count) |
+| CL-S06 | Known canonical_name returns its synonyms | canonical_name="extinguisher_DCP_5kg", project_id="demo_ship_b" | Returns a frozenset containing "P"/"DCP"/"DP"/"D.C.P." |
+| CL-S07 | canonical_name doesn't belong to that project_id's set → ValueError | canonical_name="extinguisher_DCP_5kg", project_id="demo_ship_a" | raises ValueError (demo_ship_a has no such category) |
+| CL-S08 | canonical_name exists but has no synonym rows yet → returns an empty set (not an error) | Any canonical_category with no synonym rows yet | Returns frozenset(), doesn't raise |
+| CL-S09 | Repeated calls with the same (canonical_name, project_id) → second call hits the cache | Two consecutive calls to get_synonyms with the same arguments | Both return values are equal; DB query count is only 1 |
+| CL-S10 | clear_cache() forces a fresh DB query | get_canonical_categories(...) → clear_cache() → call again | DB query count is 2 (cache cleared, second call re-queries) |
+| CL-S11 | Lists all project_ids, alphabetically sorted | Database currently has demo_ship_a + demo_ship_b | Returns `["demo_ship_a", "demo_ship_b"]` |
+| CL-S12 | Repeated calls to list_project_ids() → second call hits the cache | Two consecutive calls | Both return values are equal; DB query count is only 1 |
+| CL-S13 | clear_cache() also clears the project_ids cache | list_project_ids() → clear_cache() → call again | DB query count is 2 |
 
 ---
 
 #### V1 · `v1_sequence_check`
 
-| Scenario ID | 场景 | 输入条件 | 预期输出 / 行为 |
+| Scenario ID | Scenario | Input conditions | Expected output / behavior |
 |---|------|---------|----------------|
-| V1-S01 | Full mode 全部节点完成且顺序正确 | completed_nodes=["E4_local","D1_local","E4_cloud","D1_cloud","E5"] | is_clean=True, missing_nodes=[], warnings=[] |
-| V1-S02 | E5 缺失 | "E5" 不在 completed_nodes | is_clean=False, missing_nodes=["E5"] |
-| V1-S03 | D1_local 缺失（非降级 full mode） | report_mode="full"，但 "D1_local" 不在 completed_nodes | is_clean=False, missing_nodes=["D1_local"] |
-| V1-S04 | 降级 local_only（cloud 节点合法缺失） | report_mode="local_only"，completed_nodes=["E4_local","D1_local","E5"] | is_clean=True，warnings 含降级说明 |
-| V1-S05 | 降级 cloud_only（local 节点合法缺失） | report_mode="cloud_only"，completed_nodes=["E4_cloud","D1_cloud","E5"] | is_clean=True，warnings 含降级说明 |
-| V1-S06 | 未知节点出现在 completed_nodes | completed_nodes 含 "X_unknown" | is_clean=False，warnings 含未知节点说明 |
-| V1-S07 | 顺序违反（D1 先于 E4） | completed_nodes=["D1_local","E4_local","E4_cloud","D1_cloud","E5"] | is_clean=False，warnings 含顺序违反说明 |
-| V1-S08 | 重复节点 | completed_nodes 含 "E5" 两次 | is_clean 不受影响（warning-only），warnings 含重复节点说明 |
-| V1-S09 | report_mode 无效 → ValueError | ctx.report_mode 为非法值 | raises ValueError |
+| V1-S01 | Full mode, all nodes complete and in correct order | completed_nodes=["E4_local","D1_local","E4_cloud","D1_cloud","E5"] | is_clean=True, missing_nodes=[], warnings=[] |
+| V1-S02 | E5 missing | "E5" not in completed_nodes | is_clean=False, missing_nodes=["E5"] |
+| V1-S03 | D1_local missing (non-degraded full mode) | report_mode="full", but "D1_local" not in completed_nodes | is_clean=False, missing_nodes=["D1_local"] |
+| V1-S04 | Degraded local_only (cloud nodes legally missing) | report_mode="local_only", completed_nodes=["E4_local","D1_local","E5"] | is_clean=True, warnings contains a degraded-mode notice |
+| V1-S05 | Degraded cloud_only (local nodes legally missing) | report_mode="cloud_only", completed_nodes=["E4_cloud","D1_cloud","E5"] | is_clean=True, warnings contains a degraded-mode notice |
+| V1-S06 | Unknown node appears in completed_nodes | completed_nodes contains "X_unknown" | is_clean=False, warnings contains an unknown-node notice |
+| V1-S07 | Order violation (D1 before E4) | completed_nodes=["D1_local","E4_local","E4_cloud","D1_cloud","E5"] | is_clean=False, warnings contains an order-violation notice |
+| V1-S08 | Duplicate node | completed_nodes contains "E5" twice | is_clean unaffected (warning-only), warnings contains a duplicate-node notice |
+| V1-S09 | Invalid report_mode → ValueError | ctx.report_mode is an illegal value | raises ValueError |
 
 ---
 
 #### V2 · `v2_trace_output`
 
-| Scenario ID | 场景 | 输入条件 | 预期输出 / 行为 |
+| Scenario ID | Scenario | Input conditions | Expected output / behavior |
 |---|------|---------|----------------|
-| V2-S01 | 正常写入 | 任意完成的 ctx | result.output_path 非 None，文件名为 {session_id}_trace.json，存在于 logs/ |
-| V2-S02 | 写入 JSON 有效 | 任意 | 写入文件可被 json.loads() 解析 |
-| V2-S03 | session_id 记录正确 | 任意 | result.session_id == ctx.session_id |
-| V2-S04 | trace 含最小 schema 字段 | 任意 | JSON 含 "session_id"、"timestamp"、"completed_nodes"、"node_timings"、"errors"、"report_mode" |
-| V2-S05 | trace 含 V1 验证结果 | 任意 | JSON 含 "verification" key，内含 is_clean、missing_nodes、warnings |
-| V2-S06 | logs/ 不存在时自动创建 | logs/ 目录缺失 | 目录被创建，文件写入成功 |
-| V2-S07 | 文件写入失败 → HARD FAIL | 模拟 OSError | raises OSError，error 被 log |
-| V2-S08 | 文件名含 session_id + _trace 后缀 | 任意 | output_path 文件名为 "{session_id}_trace.json" |
+| V2-S01 | Normal write | Any completed ctx | result.output_path not None, filename is {session_id}_trace.json, exists in logs/ |
+| V2-S02 | Written JSON is valid | Any | The written file can be parsed by json.loads() |
+| V2-S03 | session_id recorded correctly | Any | result.session_id == ctx.session_id |
+| V2-S04 | Trace contains the minimal schema fields | Any | JSON contains "session_id", "timestamp", "completed_nodes", "node_timings", "errors", "report_mode" |
+| V2-S05 | Trace contains the V1 verification result | Any | JSON contains a "verification" key, with is_clean, missing_nodes, warnings inside |
+| V2-S06 | logs/ auto-created when missing | logs/ directory missing | Directory is created, file written successfully |
+| V2-S07 | File write failure → HARD FAIL | Simulated OSError | raises OSError, error is logged |
+| V2-S08 | Filename contains session_id + _trace suffix | Any | output_path filename is "{session_id}_trace.json" |
 
 ---
 
