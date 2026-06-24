@@ -111,7 +111,12 @@ _CSS = f"""
 <style>
 /* Hide Streamlit chrome */
 #MainMenu, footer, header {{ visibility: hidden; }}
-.block-container {{ padding-top: 0 !important; }}
+.block-container {{
+    padding-top: 0 !important;
+    max-width: 1400px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}}
 
 .stApp {{
     background-color: #f2f3f5;
@@ -286,6 +291,100 @@ _CSS = f"""
     font-weight: 600;
     line-height: 20px;
     flex-shrink: 0;
+}}
+/* IDLE screen — consolidated info card (single "slide": pitch + workflow + principles) */
+.feh-info-card {{
+    background: #ffffff;
+    border: 1px solid #e5e6eb;
+    border-radius: 6px;
+    padding: 36px 48px;
+    margin-top: 24px;
+}}
+.feh-info-eyebrow {{
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: {_NAVY};
+    margin-bottom: 10px;
+}}
+.feh-info-headline {{
+    font-size: 22px;
+    font-weight: 700;
+    color: #1d2129;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}}
+.feh-info-sub {{
+    font-size: 14px;
+    color: #4e5969;
+    line-height: 1.75;
+    max-width: 760px;
+    margin-bottom: 8px;
+}}
+.feh-info-divider {{
+    height: 1px;
+    background: #e5e6eb;
+    margin: 28px 0;
+}}
+/* Workflow diagram strip — centered inside the info card */
+.feh-workflow {{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}}
+.feh-workflow-step {{
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4e5969;
+    background: #f2f3f5;
+    border: 1px solid #e5e6eb;
+}}
+.feh-workflow-arrow {{
+    color: #c9cdd4;
+    font-size: 14px;
+    padding: 0 8px;
+}}
+/* Engineering principles row — left-aligned inside the info card */
+.feh-principles {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+}}
+.feh-principle-chip {{
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4e5969;
+    background: #f2f3f5;
+    border: 1px solid #e5e6eb;
+}}
+/* Example outcome checklist — left-aligned inside the info card */
+.feh-outcome-list {{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+}}
+.feh-outcome-item {{
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2129;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}}
+.feh-outcome-check {{
+    color: #00b42a;
+    font-weight: 700;
 }}
 /* Results: constrain deck plan image height */
 .feh-plan-img [data-testid="stImage"] img {{
@@ -484,6 +583,60 @@ def _render_idle() -> None:
     col_img_pos, _, _ = st.columns([1.4, 2, 1])
     with col_img_pos:
         st.image(_load_preview(selected_path))
+
+    # Single consolidated info card below the image — pitch, pipeline, example
+    # outcome, business value, and engineering principles in one "slide"
+    # instead of scattered page elements.
+    workflow_steps = ["Plan", "Detection", "Inventory", "Compliance", "Report"]
+    workflow_html = '<span class="feh-workflow-arrow">→</span>'.join(
+        f'<span class="feh-workflow-step">{s}</span>' for s in workflow_steps
+    )
+    outcomes = [
+        "Equipment automatically detected",
+        "Findings traceable on the plan",
+        "Ambiguous cases flagged for review",
+        "Compliance verdict generated",
+        "Report ready for submission",
+    ]
+    outcome_html = "".join(
+        f'<div class="feh-outcome-item"><span class="feh-outcome-check">✓</span>{o}</div>'
+        for o in outcomes
+    )
+    business_values = ["Auditable", "Traceable", "Human-in-the-loop", "Repeatable"]
+    business_value_chips = "".join(
+        f'<span class="feh-principle-chip">{v}</span>' for v in business_values
+    )
+    principles = [
+        "Contract First",
+        "Design First",
+        "Test-Driven Development",
+    ]
+    principle_chips = "".join(f'<span class="feh-principle-chip">{p}</span>' for p in principles)
+    info_card_html = (
+        '<div class="feh-info-card">'
+        '<div class="feh-info-eyebrow">About this demo</div>'
+        '<div class="feh-info-headline">Automating ship-plan compliance review, '
+        "without losing auditability</div>"
+        '<div class="feh-info-sub">Manual ship-plan reviews are time-consuming, repetitive '
+        "and difficult to audit consistently.</div>"
+        '<div class="feh-info-sub">This demo automates fire-equipment detection, inventory '
+        "generation and compliance checking, while preserving full reasoning traceability "
+        "for human verification.</div>"
+        '<div class="feh-info-divider"></div>'
+        '<div class="feh-info-eyebrow">Pipeline</div>'
+        f'<div class="feh-workflow">{workflow_html}</div>'
+        '<div class="feh-info-divider"></div>'
+        '<div class="feh-info-eyebrow">Example Outcome</div>'
+        f'<div class="feh-outcome-list">{outcome_html}</div>'
+        '<div class="feh-info-divider"></div>'
+        '<div class="feh-info-eyebrow">Business Value</div>'
+        f'<div class="feh-principles">{business_value_chips}</div>'
+        '<div class="feh-info-divider"></div>'
+        '<div class="feh-info-eyebrow">Engineering Principles</div>'
+        f'<div class="feh-principles">{principle_chips}</div>'
+        "</div>"
+    )
+    st.markdown(info_card_html, unsafe_allow_html=True)
 
     if st.session_state.get("last_error"):
         st.error(st.session_state["last_error"])
