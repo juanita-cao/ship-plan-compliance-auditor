@@ -49,7 +49,8 @@ Deck plan image ──► E1 vision-LLM detect ──► E1b OpenCV center refin
 
 Design documents:
 - [`docs/design_backend.md`](docs/design_backend.md) — pipeline table, data contracts, ADRs
-- [`docs/design_frontend.md`](docs/design_frontend.md) — state machine, ViewModel, screen flow
+- [`docs/design_frontend.md`](docs/design_frontend.md) — Streamlit UI: state machine, ViewModel, screen flow
+- [`docs/design_web_app.md`](docs/design_web_app.md) — React + FastAPI web app: screens, state machines, upload specification, Copilot page, static demo
 
 ## Tech stack
 
