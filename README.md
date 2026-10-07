@@ -68,7 +68,7 @@ Deck plan image ──► E1 vision-LLM detect ──► E1b OpenCV center refin
                                                                                └──► D2 compliance check
                                                                                           │
                                                                                           ▼
-                                                                              E5 report ──► Streamlit + PDF
+                                                                              E5 report ──► web app / Streamlit + PDF
 ```
 
 Design documents:
@@ -84,10 +84,13 @@ Design documents:
 | Detection / CV | OpenCV, NumPy |
 | Backend | Python 3.11, Pydantic v2, psycopg3, httpx, tenacity (retry) |
 | Data | Postgres (Supabase), multi-tenant category/rule lookup |
-| Frontend | Streamlit, Pillow, ViewModel-pattern state management |
-| Reporting | ReportLab (server-rendered PDF) |
-| Quality / CI | pytest (219 tests), ruff, GitHub Actions |
-| Hosting | Streamlit Community Cloud |
+| Web API | FastAPI, Uvicorn, Pydantic, Pillow, pypdfium2 (PDF upload), classical image segmentation (no model) |
+| Web frontend | React 18, TypeScript, Vite, Ant Design, React Query, React Router, react-i18next (EN / ZH) |
+| Web state | Pure state machines (review, upload, analysis), browser storage for reviews, ViewModel-style API types |
+| Original UI | Streamlit, Pillow, ViewModel-pattern state management |
+| Reporting | ReportLab (server-rendered PDF); printable survey report in the web app |
+| Quality / CI | pytest (257 backend tests), Vitest (62 frontend tests), ruff, TypeScript strict, GitHub Actions |
+| Hosting | Free static demo on Cloudflare / Render static (recorded results, no backend); Streamlit Community Cloud for the original UI |
 
 Engineering approach (contract-first workflow):
 
@@ -115,7 +118,7 @@ psql "$DATABASE_URL" -f src/backend/db/migrations/001_category_lookup.sql
 psql "$DATABASE_URL" -f src/backend/db/migrations/002_eval_runs.sql
 psql "$DATABASE_URL" -f src/backend/db/seed_data.sql
 
-# run the test suite (219 tests)
+# run the backend test suite (257 tests)
 pytest -q
 
 # lint
@@ -160,11 +163,14 @@ The evaluation harness (`run_eval.py`) supports comparing a local model (via Oll
 ## Project structure
 
 ```
-data/             demo deck-plan images + ground-truth counts (2 ship category sets)
+data/             demo deck-plan images, ground-truth counts, recorded detection results
 docs/             design documents — read before the corresponding code was written
 src/backend/      detection pipeline, schemas, compliance rules, Postgres access
 src/frontend/     Streamlit UI, ViewModel layer, PDF report generation
-tests/            219 tests covering every pipeline stage
+backend/api/      FastAPI app: projects, detection, highlights, plan upload + segmentation
+frontend/         React + TypeScript web app (and the static demo build + exported demo data)
+scripts/          static demo export
+tests/            257 tests: pipeline stages, API, upload + segmentation, static export
 ```
 
 ---
@@ -180,11 +186,16 @@ Implemented:
 - IMO-style compliance rule engine with per-rule GO/NO-GO verdicts and cited articles
 - Streamlit UI: mock mode (Postgres-backed, no API calls) + live mode
 - Real-time PDF audit report generation from the same ViewModel the UI renders from
-- CI: lint + 219 tests against an ephemeral Postgres on every push
+- Web app (React + FastAPI): vessel overview with derived status, review queue and history, human review with sign-off, printable survey report
+- Plan upload with specification checks and deck segmentation (draggable, resizable, addable boxes)
+- Copilot page: 10 recorded Q&A with sources, expandable basis, and explicit "missing file" answers
+- Free static demo build (recorded results, no backend), EN / ZH
+- CI: lint + 257 tests against an ephemeral Postgres on every push
 
 Not implemented:
 - Live mode is not runnable out of the box in this public repo — no detection prompt is shipped (see [Data note](#data-note)); bring your own to exercise it
 - Production-grade compliance rules calibrated against a current regulatory text
-- Multi-user authentication or persistent storage beyond the single shared demo database
+- Multi-user authentication or persistent storage beyond the single shared demo database (web app reviews live in the browser)
+- A live LLM behind the Copilot page — its answers are recorded examples; uploaded decks get a clearly labelled sample result
 
-Per-step implementation status: `docs/design_backend.md` and `docs/design_frontend.md`, each under "Task list and implementation status".
+Per-step implementation status: `docs/design_backend.md`, `docs/design_frontend.md` and `docs/design_web_app.md`, each under "Task list and implementation status".
