@@ -121,6 +121,31 @@ cd frontend && npm ci && npm run dev          # http://localhost:5173
 cd frontend && npm run build:static && npm run preview:static   # http://localhost:4173
 ```
 
+### Screenshots
+
+<table>
+<tr>
+<td width="50%"><img src="docs/assets/web/login.jpg" alt="Login — fictional classification society"><br><sub>Login — fictional classification society</sub></td>
+<td width="50%"><img src="docs/assets/web/overview.jpg" alt="Vessel Overview — derived status per vessel"><br><sub>Vessel Overview — derived status per vessel</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/web/vessel.jpg" alt="Vessel — step bar, deck picker, plan preview"><br><sub>Vessel — step bar, deck picker, plan preview</sub></td>
+<td width="50%"><img src="docs/assets/web/results.jpg" alt="Results — click equipment to locate it, per-rule verdict"><br><sub>Results — click equipment to locate it, per-rule verdict</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/web/review.jpg" alt="Human review — confirm or flag each detection"><br><sub>Human review — confirm or flag each detection</sub></td>
+<td width="50%"><img src="docs/assets/web/signoff.jpg" alt="Sign-off — a signed review cannot be edited"><br><sub>Sign-off — a signed review cannot be edited</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/web/report.jpg" alt="Printable survey report from History"><br><sub>Printable survey report from History</sub></td>
+<td width="50%"><img src="docs/assets/web/copilot.jpg" alt="Copilot — cited answers, short + expandable basis"><br><sub>Copilot — cited answers, short + expandable basis</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/web/upload.jpg" alt="Upload — specification and dropzone"><br><sub>Upload — specification and dropzone</sub></td>
+<td width="50%"><img src="docs/assets/web/segment.jpg" alt="Segment review — drag, resize, add or remove deck boxes"><br><sub>Segment review — drag, resize, add or remove deck boxes</sub></td>
+</tr>
+</table>
+
 The static build serves pre-exported responses from `frontend/public/demo-data/`; upload and segmentation need the live backend. See [docs/static_deploy.md](docs/static_deploy.md). The Copilot page answers 10 recorded questions, each with sources, a short answer with expandable basis, and explicit "missing file" handling ([docs/mock_chat_qa.md](docs/mock_chat_qa.md)). All vessels, surveyors and the classification society in the demo are fictional.
 
 ## Data note
