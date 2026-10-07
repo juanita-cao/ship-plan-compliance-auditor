@@ -7,7 +7,7 @@
 ![OpenCV](https://img.shields.io/badge/CV-OpenCV-5C3EE8)
 ![Tests](https://img.shields.io/badge/tests-219%20passing-brightgreen)
 
-**[Live demo →](https://ship-plan-auditor.streamlit.app/)**
+**[Live demo →](https://ship-design-compliance-demo.innerdrivestudio.com/)** (click *Enter Demo*; recorded results, no sign-up) · [Streamlit version](https://ship-plan-auditor.streamlit.app/)
 
 An LLM-powered fire-equipment auditor for ship deck plans, built to be **explainable by design**: every run ships with a visible reasoning trace, click-to-locate evidence highlighting on the original plan, and a per-rule compliance verdict with cited regulation articles — so a human reviewer can verify the *why*, not just trust the *what*.
 
