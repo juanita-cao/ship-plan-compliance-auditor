@@ -2,8 +2,8 @@
 
 Persists the same report data run_eval.py used to only write to
 experiments/results/*.json, plus the cloud raw_response text. Both the mock
-demo path (app_streamlit.py) and the real detection path
-(pipeline_runner.py) read through this module, so neither depends on flat
+demo path and the real detection path
+read through this module, so neither depends on flat
 files or in-process memory for "what was the last result for this image".
 """
 

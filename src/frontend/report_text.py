@@ -7,9 +7,8 @@ data/prompts/prompt_cot_counts_demo_ship_b.txt STEP 1-4): [DETECTION_LIST],
 [INSTANCES_JSON] + a final bare JSON line. Parsing stops at [INSTANCES_JSON]
 — everything from there on is machine-readable, not meant for human display.
 
-Shared by the RESULTS page expander and the PDF report (pdf_report.py) so
-both render from the same structured data instead of two parsers drifting
-apart.
+Parsed once here so every view renders from the same structured data
+instead of separate parsers drifting apart.
 """
 
 from __future__ import annotations

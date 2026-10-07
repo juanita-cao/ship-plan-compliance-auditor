@@ -1,7 +1,7 @@
 """
 Tests for build_results_viewmodel_from_report_data() — the shared builder used
-by both the mock demo path (app_streamlit.py) and the real detection path
-(pipeline_runner.py), both of which now read an eval_runs.report_data row
+by both the mock demo path and the real detection path,
+both of which now read an eval_runs.report_data row
 instead of building a ViewModel straight from a fresh PipelineContext.
 
 F-VM-S01  counts only run_id=0 instances, ignores other runs

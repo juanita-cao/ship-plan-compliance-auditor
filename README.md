@@ -3,12 +3,11 @@
 [![CI](https://github.com/juanita-cao/ship-plan-compliance-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/juanita-cao/ship-plan-compliance-auditor/actions/workflows/ci.yml)
 ![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue)
 ![React](https://img.shields.io/badge/UI-React%20%2B%20FastAPI-61DAFB)
-![Streamlit](https://img.shields.io/badge/UI-Streamlit-red)
 ![Postgres](https://img.shields.io/badge/DB-Postgres-336791)
 ![OpenCV](https://img.shields.io/badge/CV-OpenCV-5C3EE8)
-![Tests](https://img.shields.io/badge/tests-257%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-242%20passing-brightgreen)
 
-**[Live demo →](https://ship-design-compliance-demo.innerdrivestudio.com/)** (click *Enter Demo*; recorded results, no sign-up) · [original Streamlit version](https://ship-plan-auditor.streamlit.app/)
+**[Live demo →](https://ship-design-compliance-demo.innerdrivestudio.com/)** (click *Enter Demo*; recorded results, no sign-up)
 
 An LLM-powered fire-equipment auditor for ship deck plans, built to be **explainable by design**: every run ships with a visible reasoning trace, click-to-locate evidence highlighting on the original plan, and a per-rule compliance verdict with cited regulation articles — so a human reviewer can verify the *why*, not just trust the *what*.
 
@@ -52,7 +51,7 @@ An LLM-powered fire-equipment auditor for ship deck plans, built to be **explain
 - **A free, deterministic refinement layer alongside the paid model call.** A local OpenCV blob-detection pass corrects instance coordinates without any additional API spend — hybrid LLM + classical CV, not LLM-only.
 - **Domain rules layered on top of the detection output.** A small, swappable rule table (modeled loosely on SOLAS/FSS Code extinguisher-count requirements) turns raw counts into a pass/fail/warning verdict per rule plus an overall verdict, each with a cited article.
 - **Multi-tenant data model.** Detection categories, compliance rule sets, and demo datasets are looked up per "project" (per ship) from Postgres, not hardcoded — adding a new ship/category set is a data change, not a code change.
-- **A real-time generated PDF audit report**, built with `reportlab` from the same ViewModel the UI renders from — not a pre-rendered file read off disk.
+- **A printable survey report** for every signed review, rendered in the web app from the stored review — what the surveyor signed is exactly what prints.
 
 > ⚠️ The compliance rule table shipped here is **illustrative only** — built for demonstration purposes, not validated against a current regulatory text. Don't use it for actual regulatory submission.
 
@@ -68,12 +67,11 @@ Deck plan image ──► E1 vision-LLM detect ──► E1b OpenCV center refin
                                                                                └──► D2 compliance check
                                                                                           │
                                                                                           ▼
-                                                                              E5 report ──► web app / Streamlit + PDF
+                                                                              E5 report ──► web app
 ```
 
 Design documents:
 - [`docs/design_backend.md`](docs/design_backend.md) — pipeline table, data contracts, ADRs
-- [`docs/design_frontend.md`](docs/design_frontend.md) — Streamlit UI: state machine, ViewModel, screen flow
 - [`docs/design_web_app.md`](docs/design_web_app.md) — React + FastAPI web app: screens, state machines, upload specification, Copilot page, static demo
 
 ## Tech stack
@@ -87,10 +85,9 @@ Design documents:
 | Web API | FastAPI, Uvicorn, Pydantic, Pillow, pypdfium2 (PDF upload), classical image segmentation (no model) |
 | Web frontend | React 18, TypeScript, Vite, Ant Design, React Query, React Router, react-i18next (EN / ZH) |
 | Web state | Pure state machines (review, upload, analysis), browser storage for reviews, ViewModel-style API types |
-| Original UI | Streamlit, Pillow, ViewModel-pattern state management |
-| Reporting | ReportLab (server-rendered PDF); printable survey report in the web app |
-| Quality / CI | pytest (257 backend tests), Vitest (62 frontend tests), ruff, TypeScript strict, GitHub Actions |
-| Hosting | Free static demo on Cloudflare / Render static (recorded results, no backend); Streamlit Community Cloud for the original UI |
+| Reporting | Printable survey report in the web app |
+| Quality / CI | pytest (242 backend tests), Vitest (62 frontend tests), ruff, TypeScript strict, GitHub Actions |
+| Hosting | Free static demo (recorded results, no backend) on a static host |
 
 Engineering approach (contract-first workflow):
 
@@ -118,16 +115,14 @@ psql "$DATABASE_URL" -f src/backend/db/migrations/001_category_lookup.sql
 psql "$DATABASE_URL" -f src/backend/db/migrations/002_eval_runs.sql
 psql "$DATABASE_URL" -f src/backend/db/seed_data.sql
 
-# run the backend test suite (257 tests)
+# run the backend test suite (242 tests)
 pytest -q
 
 # lint
 ruff check .
-
-# launch the UI in mock mode (no API key needed — replays a stored
-# detection result from Postgres for each demo image)
-FEH_MOCK=1 streamlit run src/frontend/app_streamlit.py
 ```
+
+To run the web app (no API key needed — it replays stored detection results), see [Web app](#web-app-react--fastapi-and-free-static-demo) below.
 
 Requires Python 3.11+ (the codebase uses `X | None` union syntax evaluated at runtime by Pydantic) and a reachable Postgres instance.
 
@@ -154,7 +149,7 @@ The static build serves pre-exported responses from `frontend/public/demo-data/`
 
 Sample deck plan images are demo assets with identifying details (hull/IMO numbers, company markings) removed. Compliance rules are illustrative, modeled loosely on SOLAS/FSS Code extinguisher-count requirements — not validated against a current regulatory text, and not a substitute for a real regulatory review.
 
-The detection prompt itself is not included in this repo — a deliberate choice, not an oversight. This means **live mode is not runnable out of the box**; mock mode (Postgres-backed, no API calls) is what powers the hosted demo above and what the preview screenshot reflects.
+The detection prompt itself is not included in this repo — a deliberate choice, not an oversight. This means **live mode is not runnable out of the box**; recorded results (no API calls) power the hosted demo above and the screenshots.
 
 The evaluation harness (`run_eval.py`) supports comparing a local model (via Ollama) against a cloud model side by side, for cost/accuracy trade-off testing. All results shown in the demo dataset and this repo's docs were produced by the cloud backend; the local-model path is part of the harness's design but wasn't the one exercised for these specific numbers.
 
@@ -166,11 +161,11 @@ The evaluation harness (`run_eval.py`) supports comparing a local model (via Oll
 data/             demo deck-plan images, ground-truth counts, recorded detection results
 docs/             design documents — read before the corresponding code was written
 src/backend/      detection pipeline, schemas, compliance rules, Postgres access
-src/frontend/     Streamlit UI, ViewModel layer, PDF report generation
+src/frontend/     ViewModel layer, highlight rendering, reasoning-trace parsing
 backend/api/      FastAPI app: projects, detection, highlights, plan upload + segmentation
 frontend/         React + TypeScript web app (and the static demo build + exported demo data)
 scripts/          static demo export
-tests/            257 tests: pipeline stages, API, upload + segmentation, static export
+tests/            242 tests: pipeline stages, API, upload + segmentation, static export
 ```
 
 ---
@@ -184,13 +179,11 @@ Implemented:
 - Free, local OpenCV refinement pass for instance coordinates
 - Postgres-backed multi-tenant category lookup — adding a ship/category set is a data change, not a code change
 - IMO-style compliance rule engine with per-rule GO/NO-GO verdicts and cited articles
-- Streamlit UI: mock mode (Postgres-backed, no API calls) + live mode
-- Real-time PDF audit report generation from the same ViewModel the UI renders from
 - Web app (React + FastAPI): vessel overview with derived status, review queue and history, human review with sign-off, printable survey report
 - Plan upload with specification checks and deck segmentation (draggable, resizable, addable boxes)
 - Copilot page: 10 recorded Q&A with sources, expandable basis, and explicit "missing file" answers
 - Free static demo build (recorded results, no backend), EN / ZH
-- CI: lint + 257 tests against an ephemeral Postgres on every push
+- CI: lint + 242 tests against an ephemeral Postgres on every push
 
 Not implemented:
 - Live mode is not runnable out of the box in this public repo — no detection prompt is shipped (see [Data note](#data-note)); bring your own to exercise it
@@ -198,4 +191,4 @@ Not implemented:
 - Multi-user authentication or persistent storage beyond the single shared demo database (web app reviews live in the browser)
 - A live LLM behind the Copilot page — its answers are recorded examples; uploaded decks get a clearly labelled sample result
 
-Per-step implementation status: `docs/design_backend.md`, `docs/design_frontend.md` and `docs/design_web_app.md`, each under "Task list and implementation status".
+Per-step implementation status: `docs/design_backend.md` and `docs/design_web_app.md`, each under "Task list and implementation status".

@@ -14,4 +14,3 @@ ignore = []
 
 [tool.ruff.lint.per-file-ignores]
 "run_eval.py" = ["E402"]
-"src/frontend/app_streamlit.py" = ["E402"]
