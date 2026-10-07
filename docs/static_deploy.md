@@ -27,7 +27,6 @@ Optional: `VITE_WALKTHROUGH_URL=https://…` (set in `.env.static`) adds a "Watc
 Any static host, with a rewrite of `/*` → `/index.html` (SPA routing):
 Render Static Site (Blueprint file `render-static.yaml`, or build `npm ci && npm run build:static`, publish `dist-static`), Cloudflare Pages, GitHub Pages, Netlify.
 
-**Size warning:** `public/demo.mp4` (≈ 121 MB, the login-page background video, git-ignored) is copied into the build when present.
-Remove it or compress it before hosting (Cloudflare Pages allows 25 MB per file, GitHub Pages 100 MB).
+**Login background:** `public/login-bg.mp4` (≈ 6 MB, 720p, no audio) and its poster are small enough for every free static host. The original 121 MB source video is git-ignored and not used by the app.
 
 Nothing here is pushed or deployed automatically; publishing to a public repo or host needs the owner's explicit OK.

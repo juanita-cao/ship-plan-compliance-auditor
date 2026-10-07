@@ -14,8 +14,8 @@ export function AuthLayout() {
   return (
     <div className="auth-shell">
       <div className="auth-bg" aria-hidden="true">
-        <video autoPlay muted loop playsInline>
-          <source src="/demo.mp4" type="video/mp4" />
+        <video autoPlay muted loop playsInline poster="/login-bg-poster.jpg">
+          <source src="/login-bg.mp4" type="video/mp4" />
         </video>
         <div className="auth-bg-overlay" />
       </div>
