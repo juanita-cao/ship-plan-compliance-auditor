@@ -19,7 +19,6 @@ from src.backend.schemas import CANONICAL_CATEGORIES, DetectedInstance
 from src.frontend.spotlight import render_spotlight_node
 from src.frontend.view_models import ResultsViewModel
 
-
 # ─── Fixtures ─────────────────────────────────────────────────────────────────
 
 @pytest.fixture

@@ -217,7 +217,9 @@ _INK_THRESHOLD = 235
 
 def _ink_mask(img: Image.Image) -> tuple[np.ndarray, float]:
     scale = min(1.0, _ANALYSIS_EDGE / max(img.size))
-    small = img if scale == 1.0 else img.resize((max(1, round(img.width * scale)), max(1, round(img.height * scale))), Image.BILINEAR)
+    small = img if scale == 1.0 else img.resize(
+        (max(1, round(img.width * scale)), max(1, round(img.height * scale))), Image.BILINEAR
+    )
     arr = np.asarray(small)
     return arr.min(axis=2) < _INK_THRESHOLD, scale
 
@@ -290,8 +292,10 @@ def segment_image(img: Image.Image) -> list[Region]:
         return [Region("r1", [0, 0, img.width, img.height], "Deck 1", 0.5)]
 
     H, W = mask.shape
-    ink_x0 = min(b[0] for b, _ in leaves); ink_y0 = min(b[1] for b, _ in leaves)
-    ink_x1 = max(b[2] for b, _ in leaves); ink_y1 = max(b[3] for b, _ in leaves)
+    ink_x0 = min(b[0] for b, _ in leaves)
+    ink_y0 = min(b[1] for b, _ in leaves)
+    ink_x1 = max(b[2] for b, _ in leaves)
+    ink_y1 = max(b[3] for b, _ in leaves)
     ink_area = max(1, (ink_x1 - ink_x0) * (ink_y1 - ink_y0))
     kept = [(b, c) for b, c in leaves if (b[2] - b[0]) * (b[3] - b[1]) / ink_area >= MIN_REGION_AREA]
     if not kept:
@@ -306,9 +310,14 @@ def segment_image(img: Image.Image) -> list[Region]:
     pad_x, pad_y = max(2, int(0.01 * W)), max(2, int(0.01 * H))
     regions: list[Region] = []
     for i, ((x0, y0, x1, y1), conf) in enumerate(kept, start=1):
-        bx0 = max(0, x0 - pad_x); by0 = max(0, y0 - pad_y)
-        bx1 = min(W, x1 + pad_x); by1 = min(H, y1 + pad_y)
-        box = [round(bx0 / scale), round(by0 / scale), min(img.width, round(bx1 / scale)), min(img.height, round(by1 / scale))]
+        bx0 = max(0, x0 - pad_x)
+        by0 = max(0, y0 - pad_y)
+        bx1 = min(W, x1 + pad_x)
+        by1 = min(H, y1 + pad_y)
+        box = [
+            round(bx0 / scale), round(by0 / scale),
+            min(img.width, round(bx1 / scale)), min(img.height, round(by1 / scale)),
+        ]
         regions.append(Region(f"r{i}", box, f"Deck {i}", round(float(conf), 2)))
     return regions
 
@@ -364,9 +373,15 @@ def confirm_plan(plan_id: str, decks: list[dict]) -> list[dict]:
                 if not label or len(label) > MAX_LABEL_LEN:
                     raise PlanError(422, "LB", f"Each deck needs a name (1–{MAX_LABEL_LEN} characters).")
                 if custom is not None:
-                    if (len(custom) != 4 or not (0 <= custom[0] < custom[2] <= src.width and 0 <= custom[1] < custom[3] <= src.height)
-                            or custom[2] - custom[0] < MIN_BOX_PX or custom[3] - custom[1] < MIN_BOX_PX):
-                        raise PlanError(422, "RG", f"Deck box must lie inside the sheet and be at least {MIN_BOX_PX} px each way.")
+                    inside = (
+                        len(custom) == 4
+                        and 0 <= custom[0] < custom[2] <= src.width
+                        and 0 <= custom[1] < custom[3] <= src.height
+                    )
+                    if not inside or custom[2] - custom[0] < MIN_BOX_PX or custom[3] - custom[1] < MIN_BOX_PX:
+                        raise PlanError(
+                            422, "RG", f"Deck box must lie inside the sheet and be at least {MIN_BOX_PX} px each way."
+                        )
                 seen.add(rid)
                 selection.append((rid, custom if custom is not None else regions[rid]["bbox"], label))
 

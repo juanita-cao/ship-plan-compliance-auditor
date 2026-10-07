@@ -18,6 +18,7 @@ if str(_SERVICE_ROOT) not in sys.path:
     sys.path.insert(0, str(_SERVICE_ROOT))
 
 from dotenv import load_dotenv
+
 load_dotenv(_SERVICE_ROOT / ".env")
 
 import streamlit as st  # noqa: E402

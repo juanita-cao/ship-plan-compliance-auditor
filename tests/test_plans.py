@@ -145,7 +145,8 @@ def test_up_s09_invalid_confirm_requests():
     rid = regions[0]["id"]
     assert client.post(f"/api/plans/{pid}/confirm", json={"decks": [{"region_id": rid, "label": "  "}]}).status_code == 422
     assert client.post(f"/api/plans/{pid}/confirm", json={"decks": [{"region_id": "nope", "label": "X"}]}).status_code == 422
-    assert client.post(f"/api/plans/{pid}/confirm", json={"decks": [{"region_id": rid, "label": "A"}, {"region_id": rid, "label": "B"}]}).status_code == 422
+    twice = {"decks": [{"region_id": rid, "label": "A"}, {"region_id": rid, "label": "B"}]}
+    assert client.post(f"/api/plans/{pid}/confirm", json=twice).status_code == 422
     # whole sheet as one deck (empty selection) is allowed
     r = client.post(f"/api/plans/{pid}/confirm", json={"decks": []})
     assert r.status_code == 200 and len(r.json()["images"]) == 1

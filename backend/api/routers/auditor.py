@@ -11,11 +11,11 @@ from fastapi import APIRouter, HTTPException
 
 from backend.api import fixtures, plans
 from backend.api.schemas import (
-    DetectRequest,
-    DetectResult,
-    DetectedInstance,
     ComplianceCheck,
     ComplianceResult,
+    DetectedInstance,
+    DetectRequest,
+    DetectResult,
     HealthResponse,
     ImageResponse,
     ProjectInfo,
@@ -24,8 +24,10 @@ from src.backend.d_nodes import d2_check_compliance
 from src.backend.e_nodes import e1b_refine_centers
 from src.backend.schemas import (
     ComplianceInput,
-    DetectedInstance as CoreDetectedInstance,
     E3CountResult,
+)
+from src.backend.schemas import (
+    DetectedInstance as CoreDetectedInstance,
 )
 
 logger = logging.getLogger(__name__)
@@ -162,7 +164,7 @@ def detect(req: DetectRequest):
         return _build_detect_result(req.project_id, req.image_stem)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
-    except Exception as e:
+    except Exception:
         logger.exception("detect failed: %s/%s", req.project_id, req.image_stem)
         raise HTTPException(status_code=500, detail="Detection failed")
 

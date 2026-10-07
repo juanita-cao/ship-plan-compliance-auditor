@@ -90,7 +90,8 @@ def list_projects() -> list[dict]:
         result.append({
             "id": project_id,
             "label": _PROJECT_LABELS.get(project_id, project_id),
-            "images": [{"stem": s, "label": _stem_label(s)} for s in _fixture_stems(project_id)] + plans.uploaded_decks(project_id),
+            "images": [{"stem": s, "label": _stem_label(s)} for s in _fixture_stems(project_id)]
+            + plans.uploaded_decks(project_id),
             "categories": [
                 {
                     "id": c,
