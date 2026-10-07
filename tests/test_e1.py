@@ -6,6 +6,7 @@ final counts JSON directly — no instance-level output, no E2/E3.
 
 from __future__ import annotations
 
+import io
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch

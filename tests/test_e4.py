@@ -1,7 +1,7 @@
 """
 L2 Node Unit Tests for e4_vote_per_category (E4 · Select · Per-category Majority Voter).
 
-Contract Test Scenario List: E4-S01 through E4-S15 (design_backend.md §7.10).
+Contract Test Scenario List: E4-S01 through E4-S15 (design_eval_harness.md §7.10).
 
 Verifies that E4:
 - Applies ratio gate correctly at threshold boundaries (E4-S01 to E4-S04).
@@ -55,8 +55,8 @@ def _runs_for(category: str, counts: list[int]) -> list[E3CountResult]:
 
 
 def test_e4_s01_unanimous_accepted() -> None:
-    runs = _runs_for(_CAT, [3, 3, 3, 3])
-    result = e4_vote_per_category(runs, n_runs=4)
+    runs = _runs_for(_CAT, [3, 3, 3, 3, 3])
+    result = e4_vote_per_category(runs, n_runs=5)
     vote = result.votes[_CAT]
     assert vote.ratio == pytest.approx(1.0)
     assert vote.status == "ACCEPTED"
@@ -65,41 +65,39 @@ def test_e4_s01_unanimous_accepted() -> None:
     assert vote.vote_mode == "voting"
 
 
-def test_e4_s02_boundary_at_accept_threshold() -> None:
-    # ratio lands exactly on VOTE_THRESHOLD_ACCEPT
-    runs = _runs_for(_CAT, [3, 3, 3, 2])
-    result = e4_vote_per_category(runs, n_runs=4)
+def test_e4_s02_boundary_ratio_080_accepted() -> None:
+    runs = _runs_for(_CAT, [3, 3, 3, 3, 2])
+    result = e4_vote_per_category(runs, n_runs=5)
     vote = result.votes[_CAT]
-    assert vote.ratio == pytest.approx(VOTE_THRESHOLD_ACCEPT)
+    assert vote.ratio == pytest.approx(0.80)
     assert vote.status == "ACCEPTED"
     assert vote.is_tie is False
 
 
-def test_e4_s03_boundary_at_warn_threshold() -> None:
-    # Counter {3:2, 2:1, 4:1} — ratio lands exactly on VOTE_THRESHOLD_WARN, no tie
-    runs = _runs_for(_CAT, [3, 3, 2, 4])
-    result = e4_vote_per_category(runs, n_runs=4)
+def test_e4_s03_boundary_ratio_060_accepted_with_warning() -> None:
+    runs = _runs_for(_CAT, [3, 3, 3, 2, 2])
+    result = e4_vote_per_category(runs, n_runs=5)
     vote = result.votes[_CAT]
-    assert vote.ratio == pytest.approx(VOTE_THRESHOLD_WARN)
+    assert vote.ratio == pytest.approx(0.60)
     assert vote.status == "ACCEPTED_WITH_WARNING"
     assert vote.is_tie is False
 
 
 def test_e4_s04_below_threshold_no_tie_manual_review() -> None:
-    # Counter {3:2, others:1 each} — 3 wins with freq=2/8, below VOTE_THRESHOLD_WARN, no tie
-    runs = _runs_for(_CAT, [3, 3, 2, 4, 5, 6, 7, 8])
-    result = e4_vote_per_category(runs, n_runs=8)
+    # Counter {3:2, 2:1, 4:1, 5:1} — 3 wins with freq=2, ratio=0.40, no tie
+    runs = _runs_for(_CAT, [3, 3, 2, 4, 5])
+    result = e4_vote_per_category(runs, n_runs=5)
     vote = result.votes[_CAT]
-    assert vote.ratio < VOTE_THRESHOLD_WARN
+    assert vote.ratio == pytest.approx(0.40)
     assert vote.status == "MANUAL_REVIEW_REQUIRED"
     assert vote.is_tie is False
     assert vote.voted_count == 3
 
 
 def test_e4_s05_tie_forces_manual_review() -> None:
-    # Counter {3:2, 4:2} — top-two share freq=2
-    runs = _runs_for(_CAT, [3, 4, 3, 4])
-    result = e4_vote_per_category(runs, n_runs=4)
+    # Counter {3:2, 4:2, 5:1} — top-two share freq=2
+    runs = _runs_for(_CAT, [3, 4, 3, 4, 5])
+    result = e4_vote_per_category(runs, n_runs=5)
     vote = result.votes[_CAT]
     assert vote.is_tie is True
     assert vote.status == "MANUAL_REVIEW_REQUIRED"
@@ -158,12 +156,12 @@ def test_e4_s10_all_six_categories_voted_independently() -> None:
     cat = sorted(CANONICAL_CATEGORIES)
     # Each category gets a distinct distribution so statuses differ
     patterns: dict[str, list[int]] = {
-        cat[0]: [3, 3, 3, 3, 3],  # ACCEPTED      well above accept threshold
-        cat[1]: [3, 3, 3, 3, 2],  # ACCEPTED      above accept threshold
-        cat[2]: [3, 3, 3, 2, 2],  # WARNING       between warn and accept thresholds
-        cat[3]: [3, 3, 2, 4, 5],  # MANUAL        below warn threshold, no tie
+        cat[0]: [3, 3, 3, 3, 3],  # ACCEPTED      ratio=1.00
+        cat[1]: [3, 3, 3, 3, 2],  # ACCEPTED      ratio=0.80
+        cat[2]: [3, 3, 3, 2, 2],  # WARNING       ratio=0.60
+        cat[3]: [3, 3, 2, 4, 5],  # MANUAL        ratio=0.40, no tie
         cat[4]: [3, 4, 3, 4, 5],  # MANUAL        tie
-        cat[5]: [0, 0, 0, 0, 0],  # ACCEPTED      unanimous zero
+        cat[5]: [0, 0, 0, 0, 0],  # ACCEPTED      ratio=1.00 (unanimous zero)
     }
     runs = [
         E3CountResult(
@@ -229,9 +227,9 @@ def test_e4_s14_non_canonical_key_raises_value_error() -> None:
 
 
 def test_e4_s15_tie_voted_count_none_tied_candidates_listed() -> None:
-    # Counter {3:2, 4:2} — tie between 3 and 4
-    runs = _runs_for(_CAT, [3, 4, 3, 4])
-    result = e4_vote_per_category(runs, n_runs=4)
+    # Counter {3:2, 4:2, 5:1} — tie between 3 and 4
+    runs = _runs_for(_CAT, [3, 4, 3, 4, 5])
+    result = e4_vote_per_category(runs, n_runs=5)
     vote = result.votes[_CAT]
     assert vote.is_tie is True
     assert vote.voted_count is None

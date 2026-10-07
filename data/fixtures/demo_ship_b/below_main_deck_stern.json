@@ -1,0 +1,287 @@
+{
+  "metadata": {
+    "session_id": "bafa083e-8884-46ef-9792-42c973bc988e",
+    "timestamp": "2026-06-22 14:50:12.808304",
+    "image_path": "data/images/demo_ship_b/below_main_deck_stern.png",
+    "prompt_label": "prompt_cot_counts_demo_ship_b",
+    "n_runs": 1
+  },
+  "summary_table": {
+    "local": null,
+    "cloud": [
+      {
+        "category": "extinguisher_DCP_5kg",
+        "ground_truth": 1,
+        "per_run_counts": [
+          1
+        ],
+        "voted": 1,
+        "ratio": 1.0,
+        "status": "ACCEPTED_WITH_WARNING",
+        "correct": true
+      },
+      {
+        "category": "extinguisher_wheeld_foam_45L",
+        "ground_truth": 0,
+        "per_run_counts": [
+          0
+        ],
+        "voted": 0,
+        "ratio": 1.0,
+        "status": "ACCEPTED_WITH_WARNING",
+        "correct": true
+      },
+      {
+        "category": "extinguisher_CO2_5kg",
+        "ground_truth": 0,
+        "per_run_counts": [
+          0
+        ],
+        "voted": 0,
+        "ratio": 1.0,
+        "status": "ACCEPTED_WITH_WARNING",
+        "correct": true
+      },
+      {
+        "category": "extinguisher_water_9L",
+        "ground_truth": 0,
+        "per_run_counts": [
+          0
+        ],
+        "voted": 0,
+        "ratio": 1.0,
+        "status": "ACCEPTED_WITH_WARNING",
+        "correct": true
+      }
+    ]
+  },
+  "instance_table": {
+    "local": null,
+    "cloud": [
+      {
+        "run_id": 0,
+        "instance_id": "instance_1",
+        "category": "extinguisher_DCP_5kg",
+        "nearby_text": "P 5 KG",
+        "location_desc": "upper central passage, just below green emergency exit sign and near UP label",
+        "center": [
+          0.444,
+          0.326
+        ],
+        "center_refined": false
+      }
+    ]
+  },
+  "metrics": {
+    "local": null,
+    "cloud": {
+      "majority_vote_accuracy_pct": 100.0,
+      "single_run_accuracy_avg_pct": 100.0,
+      "accuracy_gain_pct": 0.0,
+      "image_level_exact_match": true,
+      "auto_accept_rate": 0.0,
+      "accuracy_on_auto_accepted_pct": 0.0,
+      "manual_review_rate": 0.0
+    }
+  },
+  "voting": {
+    "local": null,
+    "cloud": {
+      "votes": {
+        "extinguisher_DCP_5kg": {
+          "category": "extinguisher_DCP_5kg",
+          "voted_count": 1,
+          "all_counts": [
+            1
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_wheeld_foam_45L": {
+          "category": "extinguisher_wheeld_foam_45L",
+          "voted_count": 0,
+          "all_counts": [
+            0
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_CO2_5kg": {
+          "category": "extinguisher_CO2_5kg",
+          "voted_count": 0,
+          "all_counts": [
+            0
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_water_9L": {
+          "category": "extinguisher_water_9L",
+          "voted_count": 0,
+          "all_counts": [
+            0
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        }
+      }
+    }
+  },
+  "accuracy": {
+    "local": null,
+    "cloud": {
+      "per_category": [
+        {
+          "category": "extinguisher_DCP_5kg",
+          "ground_truth": 1,
+          "voted_count": 1,
+          "correct": true,
+          "vote_status": "ACCEPTED_WITH_WARNING"
+        },
+        {
+          "category": "extinguisher_wheeld_foam_45L",
+          "ground_truth": 0,
+          "voted_count": 0,
+          "correct": true,
+          "vote_status": "ACCEPTED_WITH_WARNING"
+        },
+        {
+          "category": "extinguisher_CO2_5kg",
+          "ground_truth": 0,
+          "voted_count": 0,
+          "correct": true,
+          "vote_status": "ACCEPTED_WITH_WARNING"
+        },
+        {
+          "category": "extinguisher_water_9L",
+          "ground_truth": 0,
+          "voted_count": 0,
+          "correct": true,
+          "vote_status": "ACCEPTED_WITH_WARNING"
+        }
+      ],
+      "n_correct": 4,
+      "n_total": 4,
+      "majority_vote_accuracy_pct": 100.0,
+      "single_run_accuracy_avg_pct": 100.0,
+      "accuracy_gain_pct": 0.0,
+      "image_level_exact_match": true,
+      "auto_accept_rate": 0.0,
+      "accuracy_on_auto_accepted_pct": 0.0,
+      "manual_review_rate": 0.0,
+      "decision": "PASS",
+      "reason": "All 4 categories match ground truth.",
+      "rule_triggered": "PASS_ALL",
+      "inputs_snapshot": {
+        "voting": {
+          "votes": {
+            "extinguisher_DCP_5kg": {
+              "category": "extinguisher_DCP_5kg",
+              "voted_count": 1,
+              "all_counts": [
+                1
+              ],
+              "majority_freq": 1,
+              "n_runs": 1,
+              "ratio": 1.0,
+              "is_tie": false,
+              "tied_candidates": null,
+              "vote_mode": "single_run",
+              "status": "ACCEPTED_WITH_WARNING",
+              "threshold_accept": 0.8,
+              "threshold_warn": 0.6
+            },
+            "extinguisher_wheeld_foam_45L": {
+              "category": "extinguisher_wheeld_foam_45L",
+              "voted_count": 0,
+              "all_counts": [
+                0
+              ],
+              "majority_freq": 1,
+              "n_runs": 1,
+              "ratio": 1.0,
+              "is_tie": false,
+              "tied_candidates": null,
+              "vote_mode": "single_run",
+              "status": "ACCEPTED_WITH_WARNING",
+              "threshold_accept": 0.8,
+              "threshold_warn": 0.6
+            },
+            "extinguisher_CO2_5kg": {
+              "category": "extinguisher_CO2_5kg",
+              "voted_count": 0,
+              "all_counts": [
+                0
+              ],
+              "majority_freq": 1,
+              "n_runs": 1,
+              "ratio": 1.0,
+              "is_tie": false,
+              "tied_candidates": null,
+              "vote_mode": "single_run",
+              "status": "ACCEPTED_WITH_WARNING",
+              "threshold_accept": 0.8,
+              "threshold_warn": 0.6
+            },
+            "extinguisher_water_9L": {
+              "category": "extinguisher_water_9L",
+              "voted_count": 0,
+              "all_counts": [
+                0
+              ],
+              "majority_freq": 1,
+              "n_runs": 1,
+              "ratio": 1.0,
+              "is_tie": false,
+              "tied_candidates": null,
+              "vote_mode": "single_run",
+              "status": "ACCEPTED_WITH_WARNING",
+              "threshold_accept": 0.8,
+              "threshold_warn": 0.6
+            }
+          }
+        },
+        "ground_truth": {
+          "project_id": "demo_ship_b",
+          "counts": {
+            "extinguisher_DCP_5kg": 1,
+            "extinguisher_CO2_5kg": 0,
+            "extinguisher_wheeld_foam_45L": 0,
+            "extinguisher_water_9L": 0
+          },
+          "image_id": null
+        }
+      }
+    }
+  },
+  "mode": "cloud_only",
+  "degraded_reason": "Local backend unavailable."
+}

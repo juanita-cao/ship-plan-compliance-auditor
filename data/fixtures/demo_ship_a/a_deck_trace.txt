@@ -1,0 +1,79 @@
+[DETECTION_LIST]
+- instance_1:
+  - visual_features: standalone upright red hand-portable cylinder symbol with black top/handle; label beside it
+  - nearby_text: "P 6"
+  - location: upper-left area above the deck plan, connected by a leader line
+  - boundary_status: clear
+- instance_2:
+  - visual_features: standalone upright red hand-portable cylinder symbol with black top/handle
+  - nearby_text: "CO2"
+  - location: left-central area near the Emergency Generator Room / void area
+  - boundary_status: clear
+- instance_3:
+  - visual_features: standalone upright red hand-portable cylinder symbol with black top/handle
+  - nearby_text: "P 6"
+  - location: central area near STORE / stair passage
+  - boundary_status: clear
+- instance_4:
+  - visual_features: standalone upright red hand-portable cylinder symbol with black top/handle
+  - nearby_text: "P 6"
+  - location: lower-central area near Hospital / Steward room passage
+  - boundary_status: clear
+- instance_5:
+  - visual_features: standalone upright red hand-portable cylinder symbol with black top/handle; label beside it
+  - nearby_text: "P 6"
+  - location: lower-right area below the deck plan, connected by a leader line
+  - boundary_status: clear
+
+[MATCHING]
+- extinguisher_CO2_5kg: [instance_2]
+- extinguisher_CO2_5kg_spare: []
+- extinguisher_dry_powder_6kg: [instance_1, instance_3, instance_4, instance_5]
+- extinguisher_dry_powder_6kg_spare: []
+- extinguisher_foam_9L: []
+- extinguisher_foam_9L_spare: []
+- unknown: []
+- excluded_boundary: []
+
+[CHECKLIST]
+- extinguisher_CO2_5kg: 1
+  - locations: left-central area near the Emergency Generator Room / void area
+- extinguisher_CO2_5kg_spare: 0
+  - locations:
+- extinguisher_dry_powder_6kg: 4
+  - locations: upper-left area above the deck plan; central area near STORE / stair passage; lower-central area near Hospital / Steward room passage; lower-right area below the deck plan
+- extinguisher_dry_powder_6kg_spare: 0
+  - locations:
+- extinguisher_foam_9L: 0
+  - locations:
+- extinguisher_foam_9L_spare: 0
+  - locations:
+
+[EXCLUDED]
+- unknown: 0
+  - instance_ids:
+  - reason:
+- excluded_boundary: 0
+  - instance_ids:
+  - reason:
+
+[VALIDATION]
+- missing_detection: NO
+  - explanation: All visible standalone hand-portable extinguisher cylinder symbols with readable nearby labels were included. Red rectangular/panel symbols, hose/alarm-like marks, arrows, fixed-system-like markings, and unrelated symbols were ignored.
+- misclassification: NO
+  - explanation: Classifications rely on readable nearby text. Instance_2 has visible "CO2" next to a portable cylinder symbol. Instances_1, 3, 4, and 5 have visible "P 6". No "-S" spare marking is visible.
+- count_consistency: PASS
+  - explanation: Total detected instances = 5. Classified target instances = 5, unknown = 0, excluded_boundary = 0. Therefore 5 = 5 + 0 + 0.
+
+[RESULT]
+
+extinguisher_CO2_5kg: 1 (locations: left-central area near the Emergency Generator Room / void area)
+extinguisher_CO2_5kg_spare: 0 (locations: )
+extinguisher_dry_powder_6kg: 4 (locations: upper-left area above the deck plan; central area near STORE / stair passage; lower-central area near Hospital / Steward room passage; lower-right area below the deck plan)
+extinguisher_dry_powder_6kg_spare: 0 (locations: )
+extinguisher_foam_9L: 0 (locations: )
+extinguisher_foam_9L_spare: 0 (locations: )
+
+[INSTANCES_JSON]
+[{"instance_id":"instance_1","category":"extinguisher_dry_powder_6kg","nearby_text":"P 6","location_desc":"upper-left area above the deck plan, connected by a leader line","center":[0.379,0.130]},{"instance_id":"instance_2","category":"extinguisher_CO2_5kg","nearby_text":"CO2","location_desc":"left-central area near the Emergency Generator Room / void area","center":[0.317,0.398]},{"instance_id":"instance_3","category":"extinguisher_dry_powder_6kg","nearby_text":"P 6","location_desc":"central area near STORE / stair passage","center":[0.487,0.467]},{"instance_id":"instance_4","category":"extinguisher_dry_powder_6kg","nearby_text":"P 6","location_desc":"lower-central area near Hospital / Steward room passage","center":[0.572,0.717]},{"instance_id":"instance_5","category":"extinguisher_dry_powder_6kg","nearby_text":"P 6","location_desc":"lower-right area below the deck plan, connected by a leader line","center":[0.807,0.878]}]
+{"extinguisher_CO2_5kg":1,"extinguisher_CO2_5kg_spare":0,"extinguisher_dry_powder_6kg":4,"extinguisher_dry_powder_6kg_spare":0,"extinguisher_foam_9L":0,"extinguisher_foam_9L_spare":0}

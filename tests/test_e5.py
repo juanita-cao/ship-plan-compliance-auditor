@@ -1,7 +1,7 @@
 """
-L2 Node Unit Tests for e5_generate_report (E5 · Execute · Report Generator).
+L2 Node Unit Tests for e5_generate_report (E5 · eXecute · Report Generator).
 
-Contract Test Scenario List: E5-S01 through E5-S10 (design_backend.md §7.10).
+Contract Test Scenario List: E5-S01 through E5-S10 (design_eval_harness.md §7.10).
 
 Verifies that E5:
 - Generates correct text structure for full/degraded modes (E5-S01 to E5-S03).

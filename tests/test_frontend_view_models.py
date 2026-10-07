@@ -23,7 +23,7 @@ import pytest
 from src.frontend.view_models import ResultsViewModel, build_results_viewmodel_from_report_data
 
 _TEST_DATABASE_URL = os.environ.get(
-    "DATABASE_URL", "postgresql://localhost:5432/ship_plan_auditor"
+    "DATABASE_URL", "postgresql://localhost:5432/fire_eval_harness"
 )
 
 

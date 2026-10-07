@@ -2,7 +2,7 @@
 L2 Node Unit Tests for v1_sequence_check and v2_trace_output (V&V layer).
 
 Contract Test Scenario List: V1-S01 through V1-S08, V2-S01 through V2-S08
-(design_backend.md §7.10).
+(design_eval_harness.md §7.10).
 
 V1 verifies that v1_sequence_check:
 - Returns is_clean=True when all required nodes are present in correct order (V1-S01).

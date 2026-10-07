@@ -1,0 +1,191 @@
+{
+  "metadata": {
+    "session_id": "1bc43ee8-ff5e-41d1-ad21-d42698472bd0",
+    "timestamp": "2026-06-24 11:11:37.895437",
+    "image_path": "data/images/demo_ship_a/a_deck.png",
+    "prompt_label": "prompt_cot_counts_demo_ship_a",
+    "n_runs": 1
+  },
+  "summary_table": {
+    "local": null,
+    "cloud": null
+  },
+  "instance_table": {
+    "local": null,
+    "cloud": [
+      {
+        "run_id": 0,
+        "instance_id": "instance_1",
+        "category": "extinguisher_dry_powder_6kg",
+        "nearby_text": "P 6",
+        "location_desc": "upper-left area above the deck plan, connected by a leader line",
+        "center": [
+          0.379,
+          0.13
+        ],
+        "center_refined": false
+      },
+      {
+        "run_id": 0,
+        "instance_id": "instance_2",
+        "category": "extinguisher_CO2_5kg",
+        "nearby_text": "CO2",
+        "location_desc": "left-central area near the Emergency Generator Room / void area",
+        "center": [
+          0.317,
+          0.398
+        ],
+        "center_refined": false
+      },
+      {
+        "run_id": 0,
+        "instance_id": "instance_3",
+        "category": "extinguisher_dry_powder_6kg",
+        "nearby_text": "P 6",
+        "location_desc": "central area near STORE / stair passage",
+        "center": [
+          0.487,
+          0.467
+        ],
+        "center_refined": false
+      },
+      {
+        "run_id": 0,
+        "instance_id": "instance_4",
+        "category": "extinguisher_dry_powder_6kg",
+        "nearby_text": "P 6",
+        "location_desc": "lower-central area near Hospital / Steward room passage",
+        "center": [
+          0.572,
+          0.717
+        ],
+        "center_refined": false
+      },
+      {
+        "run_id": 0,
+        "instance_id": "instance_5",
+        "category": "extinguisher_dry_powder_6kg",
+        "nearby_text": "P 6",
+        "location_desc": "lower-right area below the deck plan, connected by a leader line",
+        "center": [
+          0.807,
+          0.878
+        ],
+        "center_refined": false
+      }
+    ]
+  },
+  "metrics": {
+    "local": null,
+    "cloud": null
+  },
+  "voting": {
+    "local": null,
+    "cloud": {
+      "votes": {
+        "extinguisher_CO2_5kg_spare": {
+          "category": "extinguisher_CO2_5kg_spare",
+          "voted_count": 0,
+          "all_counts": [
+            0
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_dry_powder_6kg": {
+          "category": "extinguisher_dry_powder_6kg",
+          "voted_count": 4,
+          "all_counts": [
+            4
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_foam_9L": {
+          "category": "extinguisher_foam_9L",
+          "voted_count": 0,
+          "all_counts": [
+            0
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_CO2_5kg": {
+          "category": "extinguisher_CO2_5kg",
+          "voted_count": 1,
+          "all_counts": [
+            1
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_dry_powder_6kg_spare": {
+          "category": "extinguisher_dry_powder_6kg_spare",
+          "voted_count": 0,
+          "all_counts": [
+            0
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_foam_9L_spare": {
+          "category": "extinguisher_foam_9L_spare",
+          "voted_count": 0,
+          "all_counts": [
+            0
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        }
+      }
+    }
+  },
+  "accuracy": {
+    "local": null,
+    "cloud": null
+  },
+  "mode": "cloud_only",
+  "degraded_reason": "Local backend unavailable."
+}

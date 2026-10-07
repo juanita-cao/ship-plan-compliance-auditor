@@ -1,0 +1,66 @@
+[DETECTION_LIST]
+- instance_1:
+  - visual_features: red upright extinguisher-like cylinder/trolley symbol adjacent to green safety box; appears to have wheeled/large-unit styling
+  - nearby_text: "F 45L"
+  - location: upper-left area, immediately right of green safety box near engine room upper-left boundary
+  - boundary_status: clear
+- instance_2:
+  - visual_features: small red upright hand-portable cylinder with black top/handle
+  - nearby_text: "P 5 K.G."
+  - location: upper-left area, just right of instance_1 near green safety box
+  - boundary_status: clear
+- instance_3:
+  - visual_features: small red upright hand-portable cylinder with black top/handle
+  - nearby_text: "P 5 K.G."
+  - location: upper-right/mid-right area near F.O. TANK (P), left of genset area
+  - boundary_status: clear
+
+[MATCHING]
+- extinguisher_DCP_5kg: [instance_2, instance_3]
+- extinguisher_CO2_5kg: []
+- extinguisher_wheeld_foam_45L: [instance_1]
+- extinguisher_water_9L: []
+- unknown: []
+- excluded_boundary: []
+
+[CHECKLIST]
+- extinguisher_DCP_5kg: 2
+  - locations: upper-left area just right of green safety box; upper-right/mid-right area near F.O. TANK (P)
+- extinguisher_CO2_5kg: 0
+  - locations:
+- extinguisher_wheeld_foam_45L: 1
+  - locations: upper-left area immediately right of green safety box
+- extinguisher_water_9L: 0
+  - locations:
+
+[EXCLUDED]
+- unknown: 0
+  - instance_ids: []
+  - reason: no detected extinguisher-like instances had unreadable or ambiguous required labels
+- excluded_boundary: 0
+  - instance_ids: []
+  - reason: no detected extinguisher-like instances were boundary-cut
+
+[VALIDATION]
+- missing_detection: NO
+  - explanation: I checked the cropped region for upright cylinder symbols, including the borders of colored safety boxes. Other red marks such as valve/fan-shaped icons, red square/rectangular W-marked boxes, arrows, and fixed/system-style symbols were not valid extinguisher cylinder icons and were not included.
+- misclassification: NO
+  - explanation: Classified instances have readable supporting text: instance_2 and instance_3 show "P 5 K.G."; instance_1 shows "F 45L". No classification was made from color alone.
+- count_consistency: PASS
+  - explanation: Total detected instances = 3; classified target instances = 3; unknown = 0; excluded_boundary = 0; 3 = 3 + 0 + 0.
+
+[RESULT]
+
+extinguisher_DCP_5kg: 2 (locations: upper-left area just right of green safety box; upper-right/mid-right area near F.O. TANK (P))
+extinguisher_CO2_5kg: 0 (locations: )
+extinguisher_wheeld_foam_45L: 1 (locations: upper-left area immediately right of green safety box)
+extinguisher_water_9L: 0 (locations: )
+
+[INSTANCES_JSON]
+[
+  {"instance_id": "instance_1", "category": "extinguisher_wheeld_foam_45L", "nearby_text": "F 45L", "location_desc": "upper-left area immediately right of green safety box", "center": [0.086, 0.232]},
+  {"instance_id": "instance_2", "category": "extinguisher_DCP_5kg", "nearby_text": "P 5 K.G.", "location_desc": "upper-left area just right of green safety box", "center": [0.119, 0.232]},
+  {"instance_id": "instance_3", "category": "extinguisher_DCP_5kg", "nearby_text": "P 5 K.G.", "location_desc": "upper-right/mid-right area near F.O. TANK (P)", "center": [0.803, 0.303]}
+]
+
+{"extinguisher_DCP_5kg": 2, "extinguisher_CO2_5kg": 0, "extinguisher_wheeld_foam_45L": 1, "extinguisher_water_9L": 0}

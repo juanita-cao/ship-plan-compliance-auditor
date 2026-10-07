@@ -230,7 +230,7 @@ def _e1_parse_counts(
     )
 
 
-# ─── E2 · Detect · OpenCV Center Refiner ────────────────────────────────────
+# ─── E1b · Detect · OpenCV Center Refiner ────────────────────────────────────
 
 _BOX_HW: float = 0.030
 _BOX_HH: float = 0.045
@@ -432,7 +432,7 @@ def e1b_refine_centers(image_path: Path, result: E3CountResult) -> E3CountResult
 
     img_bgr = cv2.imread(str(image_path))
     if img_bgr is None:
-        logger.warning("E2: could not read image %s — skipping refinement", image_path)
+        logger.warning("E1b: could not read image %s — skipping refinement", image_path)
         return result
 
     h_orig, w_orig = img_bgr.shape[:2]
@@ -461,7 +461,7 @@ def e1b_refine_centers(image_path: Path, result: E3CountResult) -> E3CountResult
         cx, cy = inst.center
         if not (0.0 <= cx <= 1.0 and 0.0 <= cy <= 1.0):
             logger.warning(
-                "E2: instance %r has out-of-range center %s — keeping original",
+                "E1b: instance %r has out-of-range center %s — keeping original",
                 inst.instance_id,
                 inst.center,
             )
@@ -486,7 +486,7 @@ def e1b_refine_centers(image_path: Path, result: E3CountResult) -> E3CountResult
         method = "union_red_blobs_near_llm_center" if display_bbox is not None else None
         if display_bbox is None:
             logger.warning(
-                "E2: no qualifying red blobs for instance %r (center=%s) — display_bbox unset",
+                "E1b: no qualifying red blobs for instance %r (center=%s) — display_bbox unset",
                 inst.instance_id,
                 inst.center,
             )
@@ -620,7 +620,7 @@ def e4_vote_per_category(
         raise
 
 
-# ─── E5 · Execute · Report Generator ─────────────────────────────────────────
+# ─── E5 · eXecute · Report Generator ─────────────────────────────────────────
 
 _VALID_MODES = {"full", "local_only", "cloud_only"}
 _7_METRICS = [

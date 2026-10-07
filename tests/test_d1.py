@@ -1,7 +1,7 @@
 """
 L2 Node Unit Tests for d1_evaluate_accuracy (D1 · Decide · Accuracy Evaluator).
 
-Contract Test Scenario List: D1-S01 through D1-S16 (design_backend.md §7.10).
+Contract Test Scenario List: D1-S01 through D1-S16 (design_eval_harness.md §7.10).
 
 Verifies that D1:
 - Computes PASS/PARTIAL/FAIL correctly (D1-S01 to D1-S04).

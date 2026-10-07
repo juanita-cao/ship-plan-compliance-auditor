@@ -39,7 +39,7 @@ def build_results_viewmodel_from_report_data(
     report into something the UI renders — no separate file-based vs
     in-memory rendering logic to keep in sync.
 
-    E2 (free, local OpenCV) and compliance are recomputed here rather than
+    E1b (free, local OpenCV) and compliance are recomputed here rather than
     stored, since the JSON report doesn't carry display_bbox or compliance.
     """
     raw = report_data["instance_table"]["cloud"] or []

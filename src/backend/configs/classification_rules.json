@@ -1,0 +1,42 @@
+{
+  "rules": [
+    {
+      "rule_id": "R1s",
+      "pattern": "(?i)(?:(?:CO2|CO₂)[-\\/]S\\b)|(?=.*(?:CO2|CO₂|5\\s*KG))(?=.*(?:SPARE|\\(S\\)))",
+      "category": "extinguisher_CO2_5kg_spare",
+      "priority": 1
+    },
+    {
+      "rule_id": "R1",
+      "pattern": "(?i)(CO2|CO₂|5\\s*KG|(?:CO2|CO₂)\\s*5\\b)",
+      "category": "extinguisher_CO2_5kg",
+      "priority": 2
+    },
+    {
+      "rule_id": "R2s",
+      "pattern": "(?i)(?:(?:DP|P)[-\\/]S\\b)|(?=.*(?:DRY\\s*POWDER|6\\s*KG))(?=.*(?:SPARE|\\(S\\)))",
+      "category": "extinguisher_dry_powder_6kg_spare",
+      "priority": 3
+    },
+    {
+      "rule_id": "R2",
+      "pattern": "(?i)(DRY\\s*POWDER|6\\s*KG|\\bP\\s*[-\\/]?\\s*6\\b)",
+      "category": "extinguisher_dry_powder_6kg",
+      "priority": 4
+    },
+    {
+      "rule_id": "R3s",
+      "pattern": "(?i)(?:F[-\\/]S\\b)|(?=.*(?:FOAM|9\\s*L))(?=.*(?:SPARE|\\(S\\)))",
+      "category": "extinguisher_foam_9L_spare",
+      "priority": 5
+    },
+    {
+      "rule_id": "R3",
+      "pattern": "(?i)(FOAM|9\\s*L|\\bF\\s*[-\\/]?\\s*9\\s*L)",
+      "category": "extinguisher_foam_9L",
+      "priority": 6
+    }
+  ],
+  "default_category": "unknown",
+  "default_rule_id": "R_UNKNOWN"
+}

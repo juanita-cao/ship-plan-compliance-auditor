@@ -1,4 +1,4 @@
-"""Image visualisation utilities for ship_plan_auditor."""
+"""Image visualisation utilities for fire_eval_harness."""
 
 from __future__ import annotations
 

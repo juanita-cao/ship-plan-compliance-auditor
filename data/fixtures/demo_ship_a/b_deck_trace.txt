@@ -1,0 +1,69 @@
+[DETECTION_LIST]
+- instance_1:
+  - visual_features: red upright hand-portable extinguisher cylinder symbol with narrow body and top handle/nozzle detail
+  - nearby_text: "F 9L"
+  - location: left side of crop, beside STORE area above ENGINE CASING
+  - boundary_status: clear
+- instance_2:
+  - visual_features: red upright hand-portable extinguisher cylinder symbol with nearby label
+  - nearby_text: "P 6"
+  - location: central-right deck block, corridor near STORE / STAIRCASE area
+  - boundary_status: clear
+- instance_3:
+  - visual_features: red upright hand-portable extinguisher cylinder symbol with nearby label
+  - nearby_text: "P 6"
+  - location: right side of lower corridor near FIRE PLAN / ELEC. ENGINEER area
+  - boundary_status: clear
+
+[MATCHING]
+- extinguisher_CO2_5kg: []
+- extinguisher_CO2_5kg_spare: []
+- extinguisher_dry_powder_6kg: [instance_2, instance_3]
+- extinguisher_dry_powder_6kg_spare: []
+- extinguisher_foam_9L: [instance_1]
+- extinguisher_foam_9L_spare: []
+- unknown: []
+- excluded_boundary: []
+
+[CHECKLIST]
+- extinguisher_CO2_5kg: 0
+  - locations:
+- extinguisher_CO2_5kg_spare: 0
+  - locations:
+- extinguisher_dry_powder_6kg: 2
+  - locations: central-right deck block corridor near STORE / STAIRCASE; right side of lower corridor near FIRE PLAN / ELEC. ENGINEER
+- extinguisher_dry_powder_6kg_spare: 0
+  - locations:
+- extinguisher_foam_9L: 1
+  - locations: left side of crop beside STORE area above ENGINE CASING
+- extinguisher_foam_9L_spare: 0
+  - locations:
+
+[EXCLUDED]
+- unknown: 0
+  - instance_ids:
+  - reason:
+- excluded_boundary: 0
+  - instance_ids:
+  - reason:
+
+[VALIDATION]
+- missing_detection: NO
+  - explanation: All visible standalone hand-portable extinguisher cylinder symbols with readable target labels were included. Red hatched boxes, framed panels, arrows, alarms, and other non-cylinder symbols were ignored.
+- misclassification: NO
+  - explanation: Classifications are based on readable nearby labels: "F 9L" for foam 9L and "P 6" for dry powder 6kg. No "-S" spare label is visible, and no CO2 fixed-system marker was classified.
+- count_consistency: PASS
+  - explanation: Total detected instances = 3; classified target instances = 3; unknown = 0; excluded_boundary = 0.
+
+[RESULT]
+
+extinguisher_CO2_5kg: 0 (locations: )
+extinguisher_CO2_5kg_spare: 0 (locations: )
+extinguisher_dry_powder_6kg: 2 (locations: central-right deck block corridor near STORE / STAIRCASE; right side of lower corridor near FIRE PLAN / ELEC. ENGINEER)
+extinguisher_dry_powder_6kg_spare: 0 (locations: )
+extinguisher_foam_9L: 1 (locations: left side of crop beside STORE area above ENGINE CASING)
+extinguisher_foam_9L_spare: 0 (locations: )
+
+[INSTANCES_JSON]
+[{"instance_id":"instance_1","category":"extinguisher_foam_9L","nearby_text":"F 9L","location_desc":"left side of crop beside STORE area above ENGINE CASING","center":[0.303,0.518]},{"instance_id":"instance_2","category":"extinguisher_dry_powder_6kg","nearby_text":"P 6","location_desc":"central-right deck block corridor near STORE / STAIRCASE area","center":[0.534,0.457]},{"instance_id":"instance_3","category":"extinguisher_dry_powder_6kg","nearby_text":"P 6","location_desc":"right side of lower corridor near FIRE PLAN / ELEC. ENGINEER area","center":[0.743,0.724]}]
+{"extinguisher_CO2_5kg":0,"extinguisher_CO2_5kg_spare":0,"extinguisher_dry_powder_6kg":2,"extinguisher_dry_powder_6kg_spare":0,"extinguisher_foam_9L":1,"extinguisher_foam_9L_spare":0}

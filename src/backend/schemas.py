@@ -24,8 +24,8 @@ CANONICAL_CATEGORIES: tuple[str, ...] = (
 )
 CANONICAL_CATEGORY_SET: frozenset[str] = frozenset(CANONICAL_CATEGORIES)
 
-VOTE_THRESHOLD_ACCEPT: float = 0.75
-VOTE_THRESHOLD_WARN: float = 0.50
+VOTE_THRESHOLD_ACCEPT: float = 0.80
+VOTE_THRESHOLD_WARN: float = 0.60
 
 # ─── Input Models ─────────────────────────────────────────────────────────────
 
@@ -59,8 +59,8 @@ class DetectedInstance(BaseModel):
     location_desc: str
     # LLM-provided center of the extinguisher cylinder symbol, normalized 0–1
     center: list[float] | None = None  # [cx, cy]
-    center_refined: bool = False  # reserved; currently unused (E2 uses display_bbox instead)
-    # E2 output: union of qualifying red blob bounding boxes near the LLM center
+    center_refined: bool = False  # reserved; currently unused (E1b uses display_bbox instead)
+    # E1b output: union of qualifying red blob bounding boxes near the LLM center
     display_bbox: list[float] | None = None  # [x1, y1, x2, y2] normalized 0–1
     display_bbox_method: str | None = None   # e.g. "union_red_blobs_near_llm_center"
 

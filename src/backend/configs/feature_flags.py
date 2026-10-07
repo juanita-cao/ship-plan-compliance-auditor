@@ -8,7 +8,7 @@ import os
 
 # ── Detection ─────────────────────────────────────────────────────────────────
 USE_MOCK_DETECTION: bool = os.getenv("FEH_MOCK", "0") == "1"
-# True  → skip E1 LLM API; load JSON fixture + run E2 locally
+# True  → skip E1 LLM API; load JSON fixture + run E1b locally
 # False → call real vision API (production default)
 
 # ── Compliance Checker ────────────────────────────────────────────────────────

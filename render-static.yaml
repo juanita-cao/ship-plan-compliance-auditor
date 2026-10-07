@@ -1,0 +1,12 @@
+# Free, backend-less static demo (ADR-F36). Use this file as the Blueprint path on Render.
+services:
+  - type: web
+    name: compliance-demo
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build:static
+    staticPublishPath: dist-static
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

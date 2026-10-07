@@ -1,0 +1,64 @@
+[DETECTION_LIST]
+- instance_1:
+  - visual_features: standalone upright red hand-portable cylinder symbol with black top/handle, narrow extinguisher body
+  - nearby_text: "CO2" above "5"
+  - location: upper-right area of RADIO SPACE, near right wall
+  - boundary_status: clear
+- instance_2:
+  - visual_features: standalone upright red hand-portable cylinder symbol with black top/handle, narrow extinguisher body
+  - nearby_text: "P" above "6"
+  - location: lower-right area of WHEEL HOUSE, near right wall
+  - boundary_status: clear
+
+[MATCHING]
+- extinguisher_CO2_5kg: [instance_1]
+- extinguisher_CO2_5kg_spare: []
+- extinguisher_dry_powder_6kg: [instance_2]
+- extinguisher_dry_powder_6kg_spare: []
+- extinguisher_foam_9L: []
+- extinguisher_foam_9L_spare: []
+- unknown: []
+- excluded_boundary: []
+
+[CHECKLIST]
+- extinguisher_CO2_5kg: 1
+  - locations: upper-right area of RADIO SPACE, near right wall
+- extinguisher_CO2_5kg_spare: 0
+  - locations:
+- extinguisher_dry_powder_6kg: 1
+  - locations: lower-right area of WHEEL HOUSE, near right wall
+- extinguisher_dry_powder_6kg_spare: 0
+  - locations:
+- extinguisher_foam_9L: 0
+  - locations:
+- extinguisher_foam_9L_spare: 0
+  - locations:
+
+[EXCLUDED]
+- unknown: 0
+  - instance_ids:
+  - reason:
+- excluded_boundary: 0
+  - instance_ids:
+  - reason:
+
+[VALIDATION]
+- missing_detection: NO
+  - explanation: All visible standalone upright hand-portable extinguisher cylinder symbols with readable labels were included. Other red symbols are panels, alarms, arrows, hose/round symbols, or fixed-system markings and were ignored.
+- misclassification: NO
+  - explanation: instance_1 has readable "CO2 5" text and was classified as CO2 5kg. instance_2 has readable "P 6" text and was classified as dry powder 6kg. No "-S" spare marking is visible.
+- count_consistency: PASS
+  - explanation: Total detected instances = 2; classified target instances = 2; unknown = 0; excluded_boundary = 0.
+
+[RESULT]
+
+extinguisher_CO2_5kg: 1 (locations: upper-right area of RADIO SPACE, near right wall)
+extinguisher_CO2_5kg_spare: 0 (locations: )
+extinguisher_dry_powder_6kg: 1 (locations: lower-right area of WHEEL HOUSE, near right wall)
+extinguisher_dry_powder_6kg_spare: 0 (locations: )
+extinguisher_foam_9L: 0 (locations: )
+extinguisher_foam_9L_spare: 0 (locations: )
+
+[INSTANCES_JSON]
+[{"instance_id":"instance_1","category":"extinguisher_CO2_5kg","nearby_text":"CO2 5","location_desc":"upper-right area of RADIO SPACE, near right wall","center":[0.811,0.365]},{"instance_id":"instance_2","category":"extinguisher_dry_powder_6kg","nearby_text":"P 6","location_desc":"lower-right area of WHEEL HOUSE, near right wall","center":[0.790,0.781]}]
+{"extinguisher_CO2_5kg":1,"extinguisher_CO2_5kg_spare":0,"extinguisher_dry_powder_6kg":1,"extinguisher_dry_powder_6kg_spare":0,"extinguisher_foam_9L":0,"extinguisher_foam_9L_spare":0}

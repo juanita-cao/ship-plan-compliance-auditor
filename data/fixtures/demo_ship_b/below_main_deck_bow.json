@@ -1,0 +1,335 @@
+{
+  "metadata": {
+    "session_id": "fd73be52-8c58-4a50-a6df-f995f0fa2f51",
+    "timestamp": "2026-06-22 14:44:42.429787",
+    "image_path": "data/images/demo_ship_b/below_main_deck_bow.png",
+    "prompt_label": "prompt_cot_counts_demo_ship_b",
+    "n_runs": 1
+  },
+  "summary_table": {
+    "local": null,
+    "cloud": [
+      {
+        "category": "extinguisher_CO2_5kg",
+        "ground_truth": 1,
+        "per_run_counts": [
+          1
+        ],
+        "voted": 1,
+        "ratio": 1.0,
+        "status": "ACCEPTED_WITH_WARNING",
+        "correct": true
+      },
+      {
+        "category": "extinguisher_DCP_5kg",
+        "ground_truth": 2,
+        "per_run_counts": [
+          2
+        ],
+        "voted": 2,
+        "ratio": 1.0,
+        "status": "ACCEPTED_WITH_WARNING",
+        "correct": true
+      },
+      {
+        "category": "extinguisher_wheeld_foam_45L",
+        "ground_truth": 1,
+        "per_run_counts": [
+          1
+        ],
+        "voted": 1,
+        "ratio": 1.0,
+        "status": "ACCEPTED_WITH_WARNING",
+        "correct": true
+      },
+      {
+        "category": "extinguisher_water_9L",
+        "ground_truth": 1,
+        "per_run_counts": [
+          1
+        ],
+        "voted": 1,
+        "ratio": 1.0,
+        "status": "ACCEPTED_WITH_WARNING",
+        "correct": true
+      }
+    ]
+  },
+  "instance_table": {
+    "local": null,
+    "cloud": [
+      {
+        "run_id": 0,
+        "instance_id": "instance_1",
+        "category": "extinguisher_CO2_5kg",
+        "nearby_text": "CO2 5 KG",
+        "location_desc": "upper-left area inside SWITCH BD. room",
+        "center": [
+          0.152,
+          0.339
+        ],
+        "center_refined": false
+      },
+      {
+        "run_id": 0,
+        "instance_id": "instance_2",
+        "category": "extinguisher_wheeld_foam_45L",
+        "nearby_text": "F 45L",
+        "location_desc": "lower-left area near C/D and F.W.TANK, beside green safety symbol",
+        "center": [
+          0.06,
+          0.795
+        ],
+        "center_refined": false
+      },
+      {
+        "run_id": 0,
+        "instance_id": "instance_3",
+        "category": "extinguisher_DCP_5kg",
+        "nearby_text": "P 5K.G.",
+        "location_desc": "lower-left area near C/D and F.W.TANK, to the right of instance_2",
+        "center": [
+          0.095,
+          0.795
+        ],
+        "center_refined": false
+      },
+      {
+        "run_id": 0,
+        "instance_id": "instance_4",
+        "category": "extinguisher_water_9L",
+        "nearby_text": "W 9L",
+        "location_desc": "central corridor near AIR CONDITION ROOM / accommodation entry",
+        "center": [
+          0.391,
+          0.433
+        ],
+        "center_refined": false
+      },
+      {
+        "run_id": 0,
+        "instance_id": "instance_5",
+        "category": "extinguisher_DCP_5kg",
+        "nearby_text": "P 5K.G.",
+        "location_desc": "right-side bow thruster compartment area near F.W.B FP TANK",
+        "center": [
+          0.729,
+          0.468
+        ],
+        "center_refined": false
+      }
+    ]
+  },
+  "metrics": {
+    "local": null,
+    "cloud": {
+      "majority_vote_accuracy_pct": 100.0,
+      "single_run_accuracy_avg_pct": 100.0,
+      "accuracy_gain_pct": 0.0,
+      "image_level_exact_match": true,
+      "auto_accept_rate": 0.0,
+      "accuracy_on_auto_accepted_pct": 0.0,
+      "manual_review_rate": 0.0
+    }
+  },
+  "voting": {
+    "local": null,
+    "cloud": {
+      "votes": {
+        "extinguisher_CO2_5kg": {
+          "category": "extinguisher_CO2_5kg",
+          "voted_count": 1,
+          "all_counts": [
+            1
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_DCP_5kg": {
+          "category": "extinguisher_DCP_5kg",
+          "voted_count": 2,
+          "all_counts": [
+            2
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_wheeld_foam_45L": {
+          "category": "extinguisher_wheeld_foam_45L",
+          "voted_count": 1,
+          "all_counts": [
+            1
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        },
+        "extinguisher_water_9L": {
+          "category": "extinguisher_water_9L",
+          "voted_count": 1,
+          "all_counts": [
+            1
+          ],
+          "majority_freq": 1,
+          "n_runs": 1,
+          "ratio": 1.0,
+          "is_tie": false,
+          "tied_candidates": null,
+          "vote_mode": "single_run",
+          "status": "ACCEPTED_WITH_WARNING",
+          "threshold_accept": 0.8,
+          "threshold_warn": 0.6
+        }
+      }
+    }
+  },
+  "accuracy": {
+    "local": null,
+    "cloud": {
+      "per_category": [
+        {
+          "category": "extinguisher_CO2_5kg",
+          "ground_truth": 1,
+          "voted_count": 1,
+          "correct": true,
+          "vote_status": "ACCEPTED_WITH_WARNING"
+        },
+        {
+          "category": "extinguisher_DCP_5kg",
+          "ground_truth": 2,
+          "voted_count": 2,
+          "correct": true,
+          "vote_status": "ACCEPTED_WITH_WARNING"
+        },
+        {
+          "category": "extinguisher_wheeld_foam_45L",
+          "ground_truth": 1,
+          "voted_count": 1,
+          "correct": true,
+          "vote_status": "ACCEPTED_WITH_WARNING"
+        },
+        {
+          "category": "extinguisher_water_9L",
+          "ground_truth": 1,
+          "voted_count": 1,
+          "correct": true,
+          "vote_status": "ACCEPTED_WITH_WARNING"
+        }
+      ],
+      "n_correct": 4,
+      "n_total": 4,
+      "majority_vote_accuracy_pct": 100.0,
+      "single_run_accuracy_avg_pct": 100.0,
+      "accuracy_gain_pct": 0.0,
+      "image_level_exact_match": true,
+      "auto_accept_rate": 0.0,
+      "accuracy_on_auto_accepted_pct": 0.0,
+      "manual_review_rate": 0.0,
+      "decision": "PASS",
+      "reason": "All 4 categories match ground truth.",
+      "rule_triggered": "PASS_ALL",
+      "inputs_snapshot": {
+        "voting": {
+          "votes": {
+            "extinguisher_CO2_5kg": {
+              "category": "extinguisher_CO2_5kg",
+              "voted_count": 1,
+              "all_counts": [
+                1
+              ],
+              "majority_freq": 1,
+              "n_runs": 1,
+              "ratio": 1.0,
+              "is_tie": false,
+              "tied_candidates": null,
+              "vote_mode": "single_run",
+              "status": "ACCEPTED_WITH_WARNING",
+              "threshold_accept": 0.8,
+              "threshold_warn": 0.6
+            },
+            "extinguisher_DCP_5kg": {
+              "category": "extinguisher_DCP_5kg",
+              "voted_count": 2,
+              "all_counts": [
+                2
+              ],
+              "majority_freq": 1,
+              "n_runs": 1,
+              "ratio": 1.0,
+              "is_tie": false,
+              "tied_candidates": null,
+              "vote_mode": "single_run",
+              "status": "ACCEPTED_WITH_WARNING",
+              "threshold_accept": 0.8,
+              "threshold_warn": 0.6
+            },
+            "extinguisher_wheeld_foam_45L": {
+              "category": "extinguisher_wheeld_foam_45L",
+              "voted_count": 1,
+              "all_counts": [
+                1
+              ],
+              "majority_freq": 1,
+              "n_runs": 1,
+              "ratio": 1.0,
+              "is_tie": false,
+              "tied_candidates": null,
+              "vote_mode": "single_run",
+              "status": "ACCEPTED_WITH_WARNING",
+              "threshold_accept": 0.8,
+              "threshold_warn": 0.6
+            },
+            "extinguisher_water_9L": {
+              "category": "extinguisher_water_9L",
+              "voted_count": 1,
+              "all_counts": [
+                1
+              ],
+              "majority_freq": 1,
+              "n_runs": 1,
+              "ratio": 1.0,
+              "is_tie": false,
+              "tied_candidates": null,
+              "vote_mode": "single_run",
+              "status": "ACCEPTED_WITH_WARNING",
+              "threshold_accept": 0.8,
+              "threshold_warn": 0.6
+            }
+          }
+        },
+        "ground_truth": {
+          "project_id": "demo_ship_b",
+          "counts": {
+            "extinguisher_DCP_5kg": 2,
+            "extinguisher_CO2_5kg": 1,
+            "extinguisher_wheeld_foam_45L": 1,
+            "extinguisher_water_9L": 1
+          },
+          "image_id": null
+        }
+      }
+    }
+  },
+  "mode": "cloud_only",
+  "degraded_reason": "Local backend unavailable."
+}

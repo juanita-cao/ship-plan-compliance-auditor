@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import NamedTuple
 
 
-class StateTransitionResult(NamedTuple):
-    next_state: str
-    session_state_patch: dict
+StateTransitionResult = NamedTuple(
+    "StateTransitionResult",
+    [("next_state", str), ("session_state_patch", dict)],
+)
 
 
 def resolve_next_state(

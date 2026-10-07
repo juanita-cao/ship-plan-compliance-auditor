@@ -10,16 +10,20 @@ _BlobCandidate fixtures — no real ship images, no API calls.
   E1b-3 Transform (filter)        | _e1b_filter_candidates
   E1b-4 Transform (display_bbox)  | _e1b_compute_display_bbox
 
-Integration tests (public API) remain in test_e2.py.
+Integration tests (public API) remain in test_e1b.py.
 """
 
 from __future__ import annotations
 
+import cv2
 import numpy as np
+import pytest
 
 from src.backend.e_nodes import (
-    _MIN_BLOB_AREA_PX,
     _BlobCandidate,
+    _DISPLAY_PAD_PX,
+    _MAX_ASPECT_RATIO,
+    _MIN_BLOB_AREA_PX,
     _e1b_build_red_mask,
     _e1b_compute_display_bbox,
     _e1b_filter_candidates,
@@ -207,7 +211,7 @@ def test_filter_mixed_list_only_valid_returned():
     ) == [good]
 
 
-# ─── E1b-3 ownership gate: other_centers_px (bug fix) ─────────────────────────
+# ─── E1b-3 ownership gate: other_centers_px (bug fix) ────────────
 
 
 def test_filter_owned_by_me_when_no_other_centers_given():

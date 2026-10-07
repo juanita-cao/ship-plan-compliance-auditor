@@ -1,0 +1,76 @@
+[DETECTION_LIST]
+- instance_1:
+  - visual_features: red upright cylinder symbol with black top/handle; standalone extinguisher-like icon
+  - nearby_text: "CO2 5 KG"
+  - location: upper-left area inside SWITCH BD. room
+  - boundary_status: clear
+- instance_2:
+  - visual_features: red upright extinguisher-like symbol with adjacent small markings; appears standalone near green safety box
+  - nearby_text: "F 45L"
+  - location: lower-left area near C/D and F.W.TANK, beside green safety symbol
+  - boundary_status: clear
+- instance_3:
+  - visual_features: red upright cylinder symbol with black top/handle; standalone extinguisher-like icon
+  - nearby_text: "P 5K.G."
+  - location: lower-left area near C/D and F.W.TANK, to the right of instance_2
+  - boundary_status: clear
+- instance_4:
+  - visual_features: red upright cylinder symbol with black top/handle; standalone extinguisher-like icon near corridor doorway
+  - nearby_text: "W 9L"
+  - location: central corridor near AIR CONDITION ROOM / accommodation entry
+  - boundary_status: clear
+- instance_5:
+  - visual_features: red upright cylinder symbol with black top/handle; standalone extinguisher-like icon
+  - nearby_text: "P 5K.G."
+  - location: right-side bow thruster compartment area near F.W.B FP TANK
+  - boundary_status: clear
+- instance_6:
+  - visual_features: red vertical mark inside circular callout; possible extinguisher-like red upright shape but no clear handle/nozzle and no readable class label
+  - nearby_text: none visible
+  - location: lower-right open area below bow thruster compartment
+  - boundary_status: clear
+
+[MATCHING]
+- extinguisher_DCP_5kg: [instance_3, instance_5]
+- extinguisher_CO2_5kg: [instance_1]
+- extinguisher_wheeld_foam_45L: [instance_2]
+- extinguisher_water_9L: [instance_4]
+- unknown: [instance_6]
+- excluded_boundary: []
+
+[CHECKLIST]
+- extinguisher_DCP_5kg: 2
+  - locations: lower-left area near C/D and F.W.TANK; right-side bow thruster compartment area near F.W.B FP TANK
+- extinguisher_CO2_5kg: 1
+  - locations: upper-left area inside SWITCH BD. room
+- extinguisher_wheeld_foam_45L: 1
+  - locations: lower-left area near C/D and F.W.TANK, beside green safety symbol
+- extinguisher_water_9L: 1
+  - locations: central corridor near AIR CONDITION ROOM / accommodation entry
+
+[EXCLUDED]
+- unknown: 1
+  - instance_ids: [instance_6]
+  - reason: red vertical mark lacks readable supporting text and does not clearly show a standard extinguisher cylinder with handle/nozzle
+- excluded_boundary: 0
+  - instance_ids: []
+  - reason: no detected extinguisher-like instance was boundary-cut
+
+[VALIDATION]
+- missing_detection: NO
+  - explanation: All visible extinguisher-like upright red cylinder symbols with readable nearby labels were included. Red half-disc/fan-shaped "G" symbols and red circular callout icons were not counted as target extinguishers; the one ambiguous vertical red mark was recorded as unknown.
+- misclassification: NO
+  - explanation: Counted instances were classified only where nearby readable labels supported the category: CO2 5 KG, F 45L, P 5K.G., and W 9L. The unclear circular red mark was not classified.
+- count_consistency: PASS
+  - explanation: Total detected instances = 6; classified target instances = 5, unknown = 1, excluded_boundary = 0; 5 + 1 + 0 = 6.
+
+[RESULT]
+
+extinguisher_DCP_5kg: 2 (locations: lower-left area near C/D and F.W.TANK; right-side bow thruster compartment area near F.W.B FP TANK)
+extinguisher_CO2_5kg: 1 (locations: upper-left area inside SWITCH BD. room)
+extinguisher_wheeld_foam_45L: 1 (locations: lower-left area near C/D and F.W.TANK, beside green safety symbol)
+extinguisher_water_9L: 1 (locations: central corridor near AIR CONDITION ROOM / accommodation entry)
+
+[INSTANCES_JSON]
+[{"instance_id":"instance_1","category":"extinguisher_CO2_5kg","nearby_text":"CO2 5 KG","location_desc":"upper-left area inside SWITCH BD. room","center":[0.152,0.339]},{"instance_id":"instance_2","category":"extinguisher_wheeld_foam_45L","nearby_text":"F 45L","location_desc":"lower-left area near C/D and F.W.TANK, beside green safety symbol","center":[0.060,0.795]},{"instance_id":"instance_3","category":"extinguisher_DCP_5kg","nearby_text":"P 5K.G.","location_desc":"lower-left area near C/D and F.W.TANK, to the right of instance_2","center":[0.095,0.795]},{"instance_id":"instance_4","category":"extinguisher_water_9L","nearby_text":"W 9L","location_desc":"central corridor near AIR CONDITION ROOM / accommodation entry","center":[0.391,0.433]},{"instance_id":"instance_5","category":"extinguisher_DCP_5kg","nearby_text":"P 5K.G.","location_desc":"right-side bow thruster compartment area near F.W.B FP TANK","center":[0.729,0.468]}]
+{"extinguisher_DCP_5kg":2,"extinguisher_CO2_5kg":1,"extinguisher_wheeld_foam_45L":1,"extinguisher_water_9L":1}

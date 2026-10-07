@@ -106,11 +106,11 @@ class TestCategoryVote:
         return CategoryVote(**{**base, **overrides})
 
     def test_accepted_when_ratio_at_threshold(self):
-        vote = self._make_vote(ratio=VOTE_THRESHOLD_ACCEPT, status="ACCEPTED")
+        vote = self._make_vote(ratio=0.80, status="ACCEPTED")
         assert vote.status == "ACCEPTED"
 
     def test_warning_when_ratio_at_lower_threshold(self):
-        vote = self._make_vote(majority_freq=3, ratio=VOTE_THRESHOLD_WARN, status="ACCEPTED_WITH_WARNING")
+        vote = self._make_vote(majority_freq=3, ratio=0.60, status="ACCEPTED_WITH_WARNING")
         assert vote.status == "ACCEPTED_WITH_WARNING"
 
     def test_manual_review_when_below_threshold(self):

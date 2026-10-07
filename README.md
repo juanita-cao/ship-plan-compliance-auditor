@@ -107,6 +107,21 @@ CI runs the same lint + test commands against an ephemeral Postgres on every pus
 
 ---
 
+## Web app (React + FastAPI) and free static demo
+
+A SaaS-style web app sits on the same detection pipeline: vessel overview, review queue and history, a human review and sign-off loop, plan upload with deck segmentation, and a cited, recorded-answer Copilot page.
+
+```bash
+# live version: FastAPI backend + React frontend
+uvicorn backend.api.main:app --reload --port 8000
+cd frontend && npm ci && npm run dev          # http://localhost:5173
+
+# static demo: recorded results, no backend, free to host anywhere
+cd frontend && npm run build:static && npm run preview:static   # http://localhost:4173
+```
+
+The static build serves pre-exported responses from `frontend/public/demo-data/`; upload and segmentation need the live backend. See [docs/static_deploy.md](docs/static_deploy.md). The Copilot page answers 10 recorded questions, each with sources, a short answer with expandable basis, and explicit "missing file" handling ([docs/mock_chat_qa.md](docs/mock_chat_qa.md)). All vessels, surveyors and the classification society in the demo are fictional.
+
 ## Data note
 
 Sample deck plan images are demo assets with identifying details (hull/IMO numbers, company markings) removed. Compliance rules are illustrative, modeled loosely on SOLAS/FSS Code extinguisher-count requirements — not validated against a current regulatory text, and not a substitute for a real regulatory review.

@@ -1,0 +1,52 @@
+[DETECTION_LIST]
+- instance_1:
+  - visual_features: red upright hand-portable extinguisher cylinder symbol with small black hose/nozzle at top; standalone cylinder shape
+  - nearby_text: "P" and "5K.G" / "5 KG" visible adjacent to symbol
+  - location: upper central passage, just below green emergency exit sign and near "UP" label
+  - boundary_status: clear
+
+[MATCHING]
+- extinguisher_DCP_5kg: [instance_1]
+- extinguisher_CO2_5kg: []
+- extinguisher_wheeld_foam_45L: []
+- extinguisher_water_9L: []
+- unknown: []
+- excluded_boundary: []
+
+[CHECKLIST]
+- extinguisher_DCP_5kg: 1
+  - locations: upper central passage, just below green emergency exit sign and near "UP" label
+- extinguisher_CO2_5kg: 0
+  - locations:
+- extinguisher_wheeld_foam_45L: 0
+  - locations:
+- extinguisher_water_9L: 0
+  - locations:
+
+[EXCLUDED]
+- unknown: 0
+  - instance_ids:
+  - reason:
+- excluded_boundary: 0
+  - instance_ids:
+  - reason:
+
+[VALIDATION]
+- missing_detection: NO
+  - explanation: One valid upright extinguisher cylinder symbol was found. Other red marks, including the red half-disc/valve-like symbol near the center and the red curved mark in the circle, do not have a valid extinguisher cylinder body and were not detected.
+- misclassification: NO
+  - explanation: The counted instance has readable supporting text "P" with "5 KG", matching DCP 5kg. It was not classified by color alone.
+- count_consistency: PASS
+  - explanation: Total detected instances = 1; classified target instances = 1; unknown = 0; excluded_boundary = 0.
+
+[RESULT]
+
+extinguisher_DCP_5kg: 1 (locations: upper central passage, just below green emergency exit sign and near "UP" label)
+extinguisher_CO2_5kg: 0 (locations: )
+extinguisher_wheeld_foam_45L: 0 (locations: )
+extinguisher_water_9L: 0 (locations: )
+
+[INSTANCES_JSON]
+[{"instance_id":"instance_1","category":"extinguisher_DCP_5kg","nearby_text":"P 5 KG","location_desc":"upper central passage, just below green emergency exit sign and near UP label","center":[0.444,0.326]}]
+
+{"extinguisher_DCP_5kg":1,"extinguisher_CO2_5kg":0,"extinguisher_wheeld_foam_45L":0,"extinguisher_water_9L":0}
