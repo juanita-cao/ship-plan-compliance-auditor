@@ -2,12 +2,13 @@
 
 [![CI](https://github.com/juanita-cao/ship-plan-compliance-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/juanita-cao/ship-plan-compliance-auditor/actions/workflows/ci.yml)
 ![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue)
+![React](https://img.shields.io/badge/UI-React%20%2B%20FastAPI-61DAFB)
 ![Streamlit](https://img.shields.io/badge/UI-Streamlit-red)
 ![Postgres](https://img.shields.io/badge/DB-Postgres-336791)
 ![OpenCV](https://img.shields.io/badge/CV-OpenCV-5C3EE8)
-![Tests](https://img.shields.io/badge/tests-219%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-257%20passing-brightgreen)
 
-**[Live demo →](https://ship-design-compliance-demo.innerdrivestudio.com/)** (click *Enter Demo*; recorded results, no sign-up) · [Streamlit version](https://ship-plan-auditor.streamlit.app/)
+**[Live demo →](https://ship-design-compliance-demo.innerdrivestudio.com/)** (click *Enter Demo*; recorded results, no sign-up) · [original Streamlit version](https://ship-plan-auditor.streamlit.app/)
 
 An LLM-powered fire-equipment auditor for ship deck plans, built to be **explainable by design**: every run ships with a visible reasoning trace, click-to-locate evidence highlighting on the original plan, and a per-rule compliance verdict with cited regulation articles — so a human reviewer can verify the *why*, not just trust the *what*.
 
@@ -17,7 +18,30 @@ An LLM-powered fire-equipment auditor for ship deck plans, built to be **explain
 
 ## Demo Preview
 
-![Results screen preview](docs/assets/dashboard_preview.png)
+[![Results: equipment highlight and per-rule verdict](docs/assets/web/results.jpg)](https://ship-design-compliance-demo.innerdrivestudio.com/)
+
+<table>
+<tr>
+<td width="50%"><img src="docs/assets/web/login.jpg" alt="Login — fictional classification society"><br><sub>Login — fictional classification society</sub></td>
+<td width="50%"><img src="docs/assets/web/overview.jpg" alt="Vessel Overview — derived status per vessel"><br><sub>Vessel Overview — derived status per vessel</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/web/vessel.jpg" alt="Vessel — step bar, deck picker, plan preview"><br><sub>Vessel — step bar, deck picker, plan preview</sub></td>
+<td width="50%"><img src="docs/assets/web/results.jpg" alt="Results — click equipment to locate it, per-rule verdict"><br><sub>Results — click equipment to locate it, per-rule verdict</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/web/review.jpg" alt="Human review — confirm or flag each detection"><br><sub>Human review — confirm or flag each detection</sub></td>
+<td width="50%"><img src="docs/assets/web/signoff.jpg" alt="Sign-off — a signed review cannot be edited"><br><sub>Sign-off — a signed review cannot be edited</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/web/report.jpg" alt="Printable survey report from History"><br><sub>Printable survey report from History</sub></td>
+<td width="50%"><img src="docs/assets/web/copilot.jpg" alt="Copilot — cited answers, short + expandable basis"><br><sub>Copilot — cited answers, short + expandable basis</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/web/upload.jpg" alt="Upload — specification and dropzone"><br><sub>Upload — specification and dropzone</sub></td>
+<td width="50%"><img src="docs/assets/web/segment.jpg" alt="Segment review — drag, resize, add or remove deck boxes"><br><sub>Segment review — drag, resize, add or remove deck boxes</sub></td>
+</tr>
+</table>
 
 ---
 
@@ -120,31 +144,6 @@ cd frontend && npm ci && npm run dev          # http://localhost:5173
 # static demo: recorded results, no backend, free to host anywhere
 cd frontend && npm run build:static && npm run preview:static   # http://localhost:4173
 ```
-
-### Screenshots
-
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/web/login.jpg" alt="Login — fictional classification society"><br><sub>Login — fictional classification society</sub></td>
-<td width="50%"><img src="docs/assets/web/overview.jpg" alt="Vessel Overview — derived status per vessel"><br><sub>Vessel Overview — derived status per vessel</sub></td>
-</tr>
-<tr>
-<td width="50%"><img src="docs/assets/web/vessel.jpg" alt="Vessel — step bar, deck picker, plan preview"><br><sub>Vessel — step bar, deck picker, plan preview</sub></td>
-<td width="50%"><img src="docs/assets/web/results.jpg" alt="Results — click equipment to locate it, per-rule verdict"><br><sub>Results — click equipment to locate it, per-rule verdict</sub></td>
-</tr>
-<tr>
-<td width="50%"><img src="docs/assets/web/review.jpg" alt="Human review — confirm or flag each detection"><br><sub>Human review — confirm or flag each detection</sub></td>
-<td width="50%"><img src="docs/assets/web/signoff.jpg" alt="Sign-off — a signed review cannot be edited"><br><sub>Sign-off — a signed review cannot be edited</sub></td>
-</tr>
-<tr>
-<td width="50%"><img src="docs/assets/web/report.jpg" alt="Printable survey report from History"><br><sub>Printable survey report from History</sub></td>
-<td width="50%"><img src="docs/assets/web/copilot.jpg" alt="Copilot — cited answers, short + expandable basis"><br><sub>Copilot — cited answers, short + expandable basis</sub></td>
-</tr>
-<tr>
-<td width="50%"><img src="docs/assets/web/upload.jpg" alt="Upload — specification and dropzone"><br><sub>Upload — specification and dropzone</sub></td>
-<td width="50%"><img src="docs/assets/web/segment.jpg" alt="Segment review — drag, resize, add or remove deck boxes"><br><sub>Segment review — drag, resize, add or remove deck boxes</sub></td>
-</tr>
-</table>
 
 The static build serves pre-exported responses from `frontend/public/demo-data/`; upload and segmentation need the live backend. See [docs/static_deploy.md](docs/static_deploy.md). The Copilot page answers 10 recorded questions, each with sources, a short answer with expandable basis, and explicit "missing file" handling ([docs/mock_chat_qa.md](docs/mock_chat_qa.md)). All vessels, surveyors and the classification society in the demo are fictional.
 
