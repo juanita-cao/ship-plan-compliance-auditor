@@ -152,9 +152,9 @@ export function AuditorPage({ auto }: { auto?: AutoAnalyze | null }) {
 
         {/* ═══ IDLE / RUNNING ══════════════════════════════════════════════ */}
         {(state.stage === "IDLE" || state.stage === "RUNNING") && (
-          <div style={{ padding: "24px 28px" }}>
+          <div style={{ padding: "24px var(--gutter)" }}>
             {/* Vessel selector row */}
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 0 }}>
+            <div className="pvcb-vessel-row">
               <div style={{ flex: 1 }}>
                 {currentProject && <VesselHeader project={currentProject} />}
               </div>
@@ -248,9 +248,9 @@ export function AuditorPage({ auto }: { auto?: AutoAnalyze | null }) {
           const resultCats = vm.is_sample ? (projects.find(p => p.id === "demo_ship_a")?.categories ?? currentCats) : currentCats;
 
           return (
-            <div style={{ padding: "0 28px 40px" }}>
+            <div style={{ padding: "0 var(--gutter) 40px" }}>
               {/* Breadcrumb + vessel selector + New Analysis */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0" }}>
+              <div className="pvcb-results-bar">
                 <div>
                   <Select
                     value={state.projectId}
@@ -278,7 +278,7 @@ export function AuditorPage({ auto }: { auto?: AutoAnalyze | null }) {
 
               <MetricsRow totalByCategory={vm.total_by_category} />
 
-              <div style={{ display: "grid", gridTemplateColumns: "3fr 3fr 2fr", gap: 16, marginTop: 8 }}>
+              <div className="pvcb-result-grid">
                 <ImageCard projectId={vm.project_id} imageStem={vm.image_stem} selectedCategory={null} selectedInstanceId={null} title={t("vessel.originalPlan")} />
                 <ImageCard projectId={vm.project_id} imageStem={vm.image_stem} selectedCategory={state.selectedCategory} selectedInstanceId={state.selectedInstanceId} title={vm.is_sample ? t("vessel.highlightSample") : t("vessel.highlight")} spotlight />
                 <div style={{ background: "#fff", borderRadius: 8, padding: 12, boxShadow: "0 1px 4px rgba(0,0,0,.08)" }}>

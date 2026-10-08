@@ -221,7 +221,7 @@ function LiveUploadWorkspace({ projectId, hasDecks, onCancel, onAdded }: {
       )}
 
       {processing && (
-        <div style={{ padding: "36px 0 28px", maxWidth: 460, margin: "0 auto", textAlign: "center" }}>
+        <div style={{ padding: "36px 0 var(--gutter)", maxWidth: 460, margin: "0 auto", textAlign: "center" }}>
           <Progress percent={s.step === "UP_UPLOADING" ? 35 : 80} status="active" showInfo={false} />
           <div style={{ marginTop: 14, color: "#374151", fontSize: 14, fontWeight: 600 }}>{s.step === "UP_UPLOADING" ? t("upload.uploading") : t("upload.segmenting")}</div>
           <div style={{ marginTop: 4, color: SUB, fontSize: 12.5 }}>{t("upload.why")}</div>

@@ -1,9 +1,10 @@
-import { LogoutOutlined, QuestionCircleOutlined, RedoOutlined } from "@ant-design/icons";
+import { LogoutOutlined, MenuOutlined, QuestionCircleOutlined, RedoOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Modal, Tooltip, message } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../state/authContext";
 import { resetDemoData } from "../state/reviewStore";
+import { setMobileNavOpen } from "../state/mobileNav";
 import { LanguageSwitch } from "./LanguageSwitch";
 
 const NAVY = "#0a1e3d";
@@ -30,12 +31,15 @@ export function AppHeader({ crumbs = [] }: { crumbs?: Crumb[] }) {
   };
 
   return (
-    <header style={{
+    <header className="pvcb-header" style={{
       height: 48, background: NAVY, padding: "0 20px 0 24px",
       display: "flex", alignItems: "center", justifyContent: "space-between",
       flexShrink: 0, borderBottom: "1px solid rgba(255,255,255,0.06)",
     }}>
-      <nav aria-label="Breadcrumb" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, minWidth: 0 }}>
+      <button className="pvcb-burger" aria-label="Menu" onClick={() => setMobileNavOpen(true)}>
+        <MenuOutlined />
+      </button>
+      <nav aria-label="Breadcrumb" className="pvcb-crumbs" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, minWidth: 0, flex: 1 }}>
         {crumbs.map((c, i) => {
           const last = i === crumbs.length - 1;
           return (
@@ -48,7 +52,7 @@ export function AppHeader({ crumbs = [] }: { crumbs?: Crumb[] }) {
           );
         })}
       </nav>
-      <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <div className="pvcb-header-actions" style={{ display: "flex", alignItems: "center", gap: 2, flexShrink: 0 }}>
         <LanguageSwitch onDark />
         <Tooltip title={t("header.guide")}>
           <Link to="/guide" style={{ display: "flex", alignItems: "center", padding: "0 8px", height: 40 }}>
@@ -63,7 +67,7 @@ export function AppHeader({ crumbs = [] }: { crumbs?: Crumb[] }) {
           ] }}
         >
           <Button type="text" style={{ color: "rgba(255,255,255,0.55)", fontSize: 12 }}>
-            {auth.username ?? "demo@pvcb.org"} ▾
+            <span className="pvcb-user">{auth.username ?? "demo@pvcb.org"}</span> ▾
           </Button>
         </Dropdown>
       </div>

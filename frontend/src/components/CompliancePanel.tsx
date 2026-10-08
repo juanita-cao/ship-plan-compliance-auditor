@@ -46,6 +46,7 @@ export function CompliancePanel({ result }: Props) {
         />
       )}
 
+      <div style={{ overflowX: "auto" }}>
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
         <thead>
           <tr style={{ background: "#f7f8fa", color: "#86909c" }}>
@@ -73,6 +74,7 @@ export function CompliancePanel({ result }: Props) {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

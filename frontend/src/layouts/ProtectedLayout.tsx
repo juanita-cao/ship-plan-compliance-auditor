@@ -7,7 +7,7 @@ export function ProtectedLayout() {
 
   // Pages render their own sidebar + content-area header so the sidebar reaches the top
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#f0f2f5" }}>
+    <div className="pvcb-app" style={{ display: "flex", minHeight: "100vh", background: "#f0f2f5" }}>
       <Outlet />
     </div>
   );

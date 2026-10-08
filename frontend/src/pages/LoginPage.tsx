@@ -33,8 +33,8 @@ export function LoginPage() {
       {/* Logo + name row */}
       <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
         <PvcbLogo size={56} />
-        <div>
-          <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", letterSpacing: "0.01em", whiteSpace: "nowrap" }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 15, fontWeight: 800, color: "#ffffff", letterSpacing: "0.01em" }}>
             {t("app.name")}
           </div>
           <div style={{ fontSize: 11, color: "#c9a84c", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 2 }}>

@@ -72,7 +72,7 @@ function ArticleRow({ a, open, toks, lang, onToggle }: {
         type="button" aria-expanded={open} aria-controls={`${a.id}-body`} onClick={onToggle}
         style={{
           width: "100%", textAlign: "left", border: 0, cursor: "pointer",
-          padding: "11px 28px", display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "11px var(--gutter)", display: "flex", alignItems: "center", justifyContent: "space-between",
           color: "#111827", fontSize: 13, background: open ? "#f8faff" : "#fff",
         }}
         onMouseEnter={e => { if (!open) e.currentTarget.style.background = "#fafafa"; }}
@@ -82,7 +82,7 @@ function ArticleRow({ a, open, toks, lang, onToggle }: {
         {open ? <UpOutlined style={{ fontSize: 10, color: SUB }} /> : <DownOutlined style={{ fontSize: 10, color: SUB }} />}
       </button>
       {open && (
-        <div id={`${a.id}-body`} style={{ padding: "4px 28px 16px", background: "#f8faff", borderTop: `1px solid ${BORDER}` }}>
+        <div id={`${a.id}-body`} style={{ padding: "4px var(--gutter) 16px", background: "#f8faff", borderTop: `1px solid ${BORDER}` }}>
           <div style={{ maxWidth: 760, fontSize: 12.5, lineHeight: 1.7, color: TXT, paddingTop: 10 }}>
             {a.a[lang].map((para, i) => (
               <p key={i} style={{ margin: "0 0 6px" }}>
@@ -153,7 +153,7 @@ export function GuidePage() {
       <div style={{ flex: 1, minWidth: 0, background: "#f0f2f5", display: "flex", flexDirection: "column" }}>
         <AppHeader crumbs={[{ label: t("nav.helpCenter") }]} />
 
-        <div style={{ padding: "24px 28px 14px" }}>
+        <div style={{ padding: "24px var(--gutter) 14px" }}>
           <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: "0 0 16px" }}>{t("help.title")}</h1>
           <Input
             ref={searchRef} allowClear value={query}
@@ -173,7 +173,7 @@ export function GuidePage() {
 
         <div style={{ background: "#fff", borderTop: `1px solid ${BORDER}`, flex: 1 }}>
           {byGroup.length === 0 ? (
-            <div style={{ padding: "48px 28px", textAlign: "center" }}>
+            <div style={{ padding: "48px var(--gutter)", textAlign: "center" }}>
               <div style={{ fontSize: 15, fontWeight: 600, color: TXT }}>{t("help.emptyTitle", { q: query })}</div>
               <div style={{ fontSize: 13, color: SUB, marginTop: 4 }}>{t("help.emptyBody")}</div>
               <Button style={{ marginTop: 14 }} onClick={() => { setQuery(""); setGroup("all"); }}>{t("help.clear")}</Button>
@@ -186,7 +186,7 @@ export function GuidePage() {
             </div>
           ) : byGroup.map(({ g, items }) => (
             <section key={g.id}>
-              <div style={{ padding: "9px 28px", background: "#f8f9fb", borderBottom: `1px solid ${BORDER}`, fontSize: 11, fontWeight: 600, color: SUB, letterSpacing: ".06em", textTransform: "uppercase" }}>
+              <div style={{ padding: "9px var(--gutter)", background: "#f8f9fb", borderBottom: `1px solid ${BORDER}`, fontSize: 11, fontWeight: 600, color: SUB, letterSpacing: ".06em", textTransform: "uppercase" }}>
                 {g.label[lang]}
               </div>
               {items.map(a => (
@@ -195,7 +195,7 @@ export function GuidePage() {
             </section>
           ))}
 
-          <div style={{ padding: "8px 28px", fontSize: 11, color: SUB, display: "flex", justifyContent: "space-between", borderTop: byGroup.length ? "none" : `1px solid ${BORDER}` }}>
+          <div style={{ padding: "8px var(--gutter)", fontSize: 11, color: SUB, display: "flex", justifyContent: "space-between", borderTop: byGroup.length ? "none" : `1px solid ${BORDER}` }}>
             <span>{t("help.count", { shown: shown.length, total: GUIDE_ARTICLES.length })}</span>
             <span>{t("help.demo")}</span>
           </div>

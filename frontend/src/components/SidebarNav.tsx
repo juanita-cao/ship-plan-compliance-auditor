@@ -5,7 +5,9 @@ import {
   QuestionCircleOutlined,
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { setMobileNavOpen, useMobileNavOpen } from "../state/mobileNav";
 import { PvcbLogo } from "./PvcbLogo";
 import { SeaLionMascot } from "./SeaLionMascot";
 import { getPendingQueue, useReviewStore } from "../state/reviewStore";
@@ -62,8 +64,13 @@ export function SidebarNav() {
   const onQueue    = pathname === "/app/queue";
   const onHistory  = pathname === "/app/history";
 
+  const mobileOpen = useMobileNavOpen();
+  useEffect(() => { setMobileNavOpen(false); }, [pathname]);
+
   return (
-    <div style={{
+    <>
+    <div className="pvcb-backdrop" data-open={mobileOpen} onClick={() => setMobileNavOpen(false)} />
+    <div className="pvcb-sidebar" data-open={mobileOpen} style={{
       width: 220, flexShrink: 0,
       background: NAVY,
       display: "flex", flexDirection: "column",
@@ -129,5 +136,6 @@ export function SidebarNav() {
         <span style={{ fontSize: 9.5, color: "rgba(255,255,255,0.25)", letterSpacing: ".03em" }}>{IS_STATIC_DEMO ? t("staticDemo.badge") : t("nav.workspace")}</span>
       </div>
     </div>
+    </>
   );
 }

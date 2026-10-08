@@ -37,8 +37,8 @@ const TH: React.CSSProperties = {
   borderBottom: `1px solid ${BORDER}`,
   whiteSpace: "nowrap", background: "#fff",
 };
-const TH_L: React.CSSProperties = { ...TH, paddingLeft: 28 };
-const TH_R: React.CSSProperties = { ...TH, paddingRight: 28 };
+const TH_L: React.CSSProperties = { ...TH, paddingLeft: "var(--gutter)" };
+const TH_R: React.CSSProperties = { ...TH, paddingRight: "var(--gutter)" };
 
 function QueueRow({ entry }: { entry: AnalyzedEntry }) {
   const { t } = useTranslation();
@@ -54,7 +54,7 @@ function QueueRow({ entry }: { entry: AnalyzedEntry }) {
       onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = "#f8faff"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = "transparent"; }}
     >
-      <td style={{ padding: "10px 14px 10px 28px", borderBottom: `1px solid ${BORDER}` }}>
+      <td style={{ padding: "10px 14px 10px var(--gutter)", borderBottom: `1px solid ${BORDER}` }}>
         <span style={{ color: "#1d4ed8", fontWeight: 600, fontSize: 13, cursor: "pointer" }}
           onClick={openReview}>
           {vesselName(entry.projectId, entry.projectLabel)}
@@ -91,7 +91,7 @@ function QueueRow({ entry }: { entry: AnalyzedEntry }) {
           {t("queue.pendingReview")}
         </span>
       </td>
-      <td style={{ padding: "10px 28px 10px 14px", borderBottom: `1px solid ${BORDER}` }}>
+      <td style={{ padding: "10px var(--gutter) 10px 14px", borderBottom: `1px solid ${BORDER}` }}>
         <button
           onClick={openReview}
           style={{
@@ -132,14 +132,14 @@ export function ReviewQueuePage() {
         <div style={{ flex: 1, minWidth: 0, background: "#f0f2f5", display: "flex", flexDirection: "column" }}>
           <AppHeader crumbs={[{ label: t("nav.queue") }]} />
 
-          <div style={{ padding: "24px 28px 20px" }}>
+          <div style={{ padding: "24px var(--gutter) 20px" }}>
             <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: 0 }}>
               {t("queue.title")}
             </h1>
           </div>
 
           {vessels.length > 1 && (
-            <div style={{ padding: "0 28px 16px", display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ padding: "0 var(--gutter) 16px", display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
               <span style={{ fontSize: 11, fontWeight: 600, color: SUB, letterSpacing: ".06em", marginRight: 2 }}>{t("queue.filterVessel").toUpperCase()}</span>
               {["all", ...vessels].map(v => {
                 const active = vesselFilter === v;
@@ -157,7 +157,7 @@ export function ReviewQueuePage() {
           {/* Table */}
           <div style={{ background: "#fff", borderTop: `1px solid ${BORDER}`, flex: 1 }}>
             {/* Section header */}
-            <div style={{ padding: "13px 28px 11px", borderBottom: `1px solid ${BORDER}` }}>
+            <div style={{ padding: "13px var(--gutter) 11px", borderBottom: `1px solid ${BORDER}` }}>
               <div>
                 <div style={{ fontSize: 13.5, fontWeight: 600 }}>{t("queue.section")}</div>
                 <div style={{ fontSize: 11.5, color: SUB, marginTop: 2 }}>
@@ -167,7 +167,7 @@ export function ReviewQueuePage() {
             </div>
 
             {queue.length === 0 ? (
-              <div style={{ padding: "64px 28px", textAlign: "center" }}>
+              <div style={{ padding: "64px var(--gutter)", textAlign: "center" }}>
                 <div style={{ fontSize: 28, marginBottom: 10, opacity: .35 }}>✓</div>
                 <div style={{ fontSize: 15, color: "#374151", fontWeight: 600 }}>{t("queue.emptyTitle")}</div>
                 <div style={{ fontSize: 13, color: SUB, marginTop: 4 }}>
@@ -196,7 +196,7 @@ export function ReviewQueuePage() {
                     </tbody>
                   </table>
                 </div>
-                <div style={{ padding: "8px 28px", fontSize: 11, color: SUB, borderTop: `1px solid ${BORDER}`, background: "#fafbfc", display: "flex", justifyContent: "space-between" }}>
+                <div style={{ padding: "8px var(--gutter)", fontSize: 11, color: SUB, borderTop: `1px solid ${BORDER}`, background: "#fafbfc", display: "flex", justifyContent: "space-between" }}>
                   <span>{queue.length === 1 ? t("queue.footerOne") : t("queue.footerMany", { n: queue.length })}</span>
                   <span>{t("queue.footerNote")}</span>
                 </div>

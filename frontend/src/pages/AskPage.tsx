@@ -87,7 +87,7 @@ export function AskPage() {
         <AppHeader crumbs={[{ label: t("nav.ask") }]} />
 
         <div style={{ flex: 1, overflowY: "auto" }}>
-          <div style={{ padding: "24px 28px 12px" }}>
+          <div style={{ padding: "24px var(--gutter) 12px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
               <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: 0 }}>{t("ask.title")}</h1>
               <Button icon={<PlusOutlined />} onClick={reset}>{t("ask.newChat")}</Button>
@@ -140,7 +140,7 @@ export function AskPage() {
           </div>
         </div>
 
-        <div style={{ borderTop: `1px solid ${BORDER}`, background: "#fff", padding: "12px 28px" }}>
+        <div style={{ borderTop: `1px solid ${BORDER}`, background: "#fff", padding: "12px var(--gutter)" }}>
           <div style={{ display: "flex", gap: 8 }}>
             <Input
               size="large" value={text} onChange={e => setText(e.target.value)} onPressEnter={() => ask(text)}

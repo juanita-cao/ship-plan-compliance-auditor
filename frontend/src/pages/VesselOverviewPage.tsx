@@ -97,7 +97,7 @@ function Row({ entry }: { entry: VesselFleetEntry }) {
       onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = "#f8faff"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = ""; }}
     >
-      <td style={{ ...TD, paddingLeft: 28 }}>
+      <td style={{ ...TD, paddingLeft: "var(--gutter)" }}>
         <span style={{ color: "#1d4ed8", fontWeight: 600, fontSize: 13 }}>{entry.name}</span>
       </td>
       <td style={TD}>{typeLabel(entry.type, i18n.language)}</td>
@@ -106,7 +106,7 @@ function Row({ entry }: { entry: VesselFleetEntry }) {
       <td style={TD}>{entry.yearBuilt}</td>
       <td style={TD}>{lastDate}</td>
       <td style={{ ...TD, textAlign: "center" }}><StatusBadge status={status} count={status === "to_review" ? pending : 0} onClick={openStatus} /></td>
-      <td style={{ ...TD, textAlign: "center", paddingRight: 28 }}>
+      <td style={{ ...TD, textAlign: "center", paddingRight: "var(--gutter)" }}>
         <span style={VERDICT_STYLE[verdict] ?? {}}>{verdict.replace("_", "-")}</span>
       </td>
     </tr>
@@ -126,14 +126,14 @@ export function VesselOverviewPage() {
         {/* Top controls bar — aligns with sidebar brand height */}
         <AppHeader crumbs={[{ label: t("nav.overview") }]} />
         {/* Title row */}
-        <div style={{ padding: "24px 28px 20px" }}>
+        <div style={{ padding: "24px var(--gutter) 20px" }}>
           <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: 0 }}>{t("overview.title")}</h1>
         </div>
 
         {/* Table — flat, no card border, white fills edge-to-edge */}
         <div style={{ background: "#fff", borderTop: `1px solid ${BORDER}`, flex: 1 }}>
           {/* Section heading */}
-          <div style={{ padding: "13px 28px 11px", borderBottom: `1px solid ${BORDER}` }}>
+          <div style={{ padding: "13px var(--gutter) 11px", borderBottom: `1px solid ${BORDER}` }}>
             <div style={{ fontWeight: 600, fontSize: 13.5 }}>{t("overview.section")}</div>
             <div style={{ fontSize: 11.5, color: SUB, marginTop: 2 }}>
               {t("overview.hint")}
@@ -144,14 +144,14 @@ export function VesselOverviewPage() {
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr>
-                  <th style={{ ...TH, paddingLeft: 28 }}>{t("overview.vessel")}</th>
+                  <th style={{ ...TH, paddingLeft: "var(--gutter)" }}>{t("overview.vessel")}</th>
                   <th style={TH}>{t("overview.type")}</th>
                   <th style={TH}>{t("overview.imo")}</th>
                   <th style={TH}>{t("overview.flag")}</th>
                   <th style={TH}>{t("overview.built")}</th>
                   <th style={TH}>{t("overview.latestReview")}</th>
                   <th style={TH_NUM}>{t("overview.statusCol")}</th>
-                  <th style={{ ...TH_NUM, paddingRight: 28 }}>{t("overview.compliance")}</th>
+                  <th style={{ ...TH_NUM, paddingRight: "var(--gutter)" }}>{t("overview.compliance")}</th>
                 </tr>
               </thead>
               <tbody>

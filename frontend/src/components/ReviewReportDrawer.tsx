@@ -71,12 +71,12 @@ export function ReviewReportDrawer({ entry, onClose }: { entry: HistoryEntry | n
   const refNo = entry ? reportNo(entry) : "";
 
   return (
-    <Drawer open={!!entry} onClose={onClose} width={560} title={t("report.drawerTitle")} styles={{ body: { padding: 0 } }}
+    <Drawer open={!!entry} onClose={onClose} width="min(560px, 100vw)" title={t("report.drawerTitle")} styles={{ body: { padding: 0 } }}
       extra={<Button size="small" icon={<PrinterOutlined />} onClick={() => window.print()}>{t("report.print")}</Button>}
     >
       <style>{PRINT_CSS}</style>
       {entry && (
-        <div id="pvcb-report" style={{ padding: "22px 28px 28px", color: "#111827" }}>
+        <div id="pvcb-report" style={{ padding: "22px var(--gutter) var(--gutter)", color: "#111827" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #0a1e3d", paddingBottom: 12 }}>
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: "#0a1e3d", letterSpacing: ".08em" }}>{t("report.society")}</div>

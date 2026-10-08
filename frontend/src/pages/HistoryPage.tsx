@@ -59,11 +59,11 @@ export function HistoryPage() {
       <div style={{ flex: 1, minWidth: 0, background: "#f0f2f5", display: "flex", flexDirection: "column" }}>
         <AppHeader crumbs={[{ label: t("nav.history") }]} />
 
-        <div style={{ padding: "24px 28px 12px" }}>
+        <div style={{ padding: "24px var(--gutter) 12px" }}>
           <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: 0 }}>{t("history.title")}</h1>
         </div>
 
-        <div style={{ padding: "0 28px 16px", display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ padding: "0 var(--gutter) 16px", display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
           <span style={{ fontSize: 11, fontWeight: 600, color: SUB, letterSpacing: ".06em", marginRight: 2 }}>{t("history.verdictFilter").toUpperCase()}</span>
           <Chip label={t("history.all")} active={verdictFilter === "all"} onClick={() => setVerdictFilter("all")} />
           <Chip label="GO" active={verdictFilter === "GO"} onClick={() => setVerdictFilter("GO")} />
@@ -78,7 +78,7 @@ export function HistoryPage() {
         </div>
 
         <div style={{ background: "#fff", borderTop: `1px solid ${BORDER}`, flex: 1 }}>
-          <div style={{ padding: "13px 28px 11px", borderBottom: `1px solid ${BORDER}` }}>
+          <div style={{ padding: "13px var(--gutter) 11px", borderBottom: `1px solid ${BORDER}` }}>
             <div style={{ fontWeight: 600, fontSize: 13.5 }}>{t("history.section")}</div>
             <div style={{ fontSize: 11.5, color: SUB, marginTop: 2 }}>
               {t("history.hint")}
@@ -89,13 +89,13 @@ export function HistoryPage() {
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr>
-                  <th style={{ ...TH, paddingLeft: 28 }}>{t("history.vessel")}</th>
+                  <th style={{ ...TH, paddingLeft: "var(--gutter)" }}>{t("history.vessel")}</th>
                   <th style={TH}>{t("history.deck")}</th>
                   <th style={TH}>{t("history.verdict")}</th>
                   <th style={TH}>{t("history.confFlag")}</th>
                   <th style={TH}>{t("history.reviewer")}</th>
                   <th style={TH}>{t("history.submitted")}</th>
-                  <th style={{ ...TH, paddingRight: 28 }}></th>
+                  <th style={{ ...TH, paddingRight: "var(--gutter)" }}></th>
                 </tr>
               </thead>
               <tbody>
@@ -104,13 +104,13 @@ export function HistoryPage() {
                     onMouseEnter={ev => { (ev.currentTarget as HTMLTableRowElement).style.background = "#f8faff"; }}
                     onMouseLeave={ev => { (ev.currentTarget as HTMLTableRowElement).style.background = ""; }}
                   >
-                    <td style={{ ...TD, paddingLeft: 28 }}><span style={{ color: "#111827", fontWeight: 600, fontSize: 13 }}>{vesselName(e.projectId, e.projectLabel)}</span></td>
+                    <td style={{ ...TD, paddingLeft: "var(--gutter)" }}><span style={{ color: "#111827", fontWeight: 600, fontSize: 13 }}>{vesselName(e.projectId, e.projectLabel)}</span></td>
                     <td style={TD}>{e.imageLabel}</td>
                     <td style={TD}><VerdictBadge verdict={e.verdict} /></td>
                     <td style={TD}>{e.confirmedCount} / {e.flaggedCount}</td>
                     <td style={TD}>{e.reviewer}</td>
                     <td style={TD}>{fmtDate(e.submittedAt, i18n.language)}</td>
-                    <td style={{ ...TD, paddingRight: 28, textAlign: "right" }}>
+                    <td style={{ ...TD, paddingRight: "var(--gutter)", textAlign: "right" }}>
                       <button onClick={() => setSelected(e)} style={{
                         border: "1px solid #d1d5db", background: "#fff", borderRadius: 5,
                         padding: "3px 11px", fontSize: 12, color: TXT, cursor: "pointer",
@@ -123,13 +123,13 @@ export function HistoryPage() {
                   </tr>
                 ))}
                 {visible.length === 0 && (
-                  <tr><td colSpan={7} style={{ ...TD, padding: "40px 28px", textAlign: "center", color: SUB }}>{t("history.noMatch")}</td></tr>
+                  <tr><td colSpan={7} style={{ ...TD, padding: "40px var(--gutter)", textAlign: "center", color: SUB }}>{t("history.noMatch")}</td></tr>
                 )}
               </tbody>
             </table>
           </div>
 
-          <div style={{ padding: "8px 28px", fontSize: 11, color: SUB, borderTop: `1px solid ${BORDER}`, background: "#fafbfc" }}>
+          <div style={{ padding: "8px var(--gutter)", fontSize: 11, color: SUB, borderTop: `1px solid ${BORDER}`, background: "#fafbfc" }}>
             {t("history.footer", { shown: visible.length, total: allEntries.length })}
           </div>
         </div>
