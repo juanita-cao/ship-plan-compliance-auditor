@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { LanguageSwitch } from "../components/LanguageSwitch";
 import { PvcbLogo } from "../components/PvcbLogo";
 import { useAuth } from "../state/authContext";
-import { COPYRIGHT_OWNER, COPYRIGHT_YEAR } from "../config";
+import { AppFooter } from "../components/AppFooter";
 
 export function AuthLayout() {
   const { auth } = useAuth();
@@ -32,9 +32,7 @@ export function AuthLayout() {
         <Outlet />
       </main>
 
-      <footer className="app-footer" style={{ color: "rgba(255,255,255,0.4)" }}>
-        © {COPYRIGHT_YEAR} {COPYRIGHT_OWNER} · {t("footer.copyright")}
-      </footer>
+      <AppFooter onDark />
     </div>
   );
 }

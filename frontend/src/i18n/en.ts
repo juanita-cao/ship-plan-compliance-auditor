@@ -56,5 +56,7 @@ export const en = {
   },
   footer: {
     copyright: "Illustrative demo only · Not for operational use",
+    aiNotice: "AI-generated content may contain errors. Please verify important information before acting.",
+    rights: "All rights reserved.",
   },
 };

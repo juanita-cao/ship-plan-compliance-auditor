@@ -56,5 +56,7 @@ export const zh = {
   },
   footer: {
     copyright: "仅供演示 · 不可用于实际操作",
+    aiNotice: "AI 生成内容可能有误，请在采取行动前核实重要信息。",
+    rights: "版权所有。",
   },
 };
